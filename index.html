@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tính Tiền & Quét QR - Tiệm Làm Tóc</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; width: 100vw; min-height: 100vh; }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans flex flex-col items-center justify-start md:justify-center p-2 md:p-4">
+
+    <div class="max-w-5xl w-full bg-white rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-2 my-auto">
+        
+        <!-- CỘT TRÁI: Nhập thông tin, Quản lý dịch vụ & Tính tiền -->
+        <div class="p-4 md:p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-200">
+            <div>
+                <div class="flex items-center justify-between mb-4 md:mb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-pink-600 text-white p-2.5 md:p-3 rounded-xl">
+                            <i class="fa-solid fa-scissors text-lg md:text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-lg md:text-xl font-bold text-slate-800">Hair Salon POS</h1>
+                            <p class="text-xs text-slate-500">Hệ thống thanh toán nhanh</p>
+                        </div>
+                    </div>
+                    <!-- Nút mở modal chỉnh sửa danh sách dịch vụ -->
+                    <button onclick="openEditModal()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg font-medium transition flex items-center gap-1">
+                        <i class="fa-solid fa-gear"></i> Sửa dịch vụ & giá
+                    </button>
+                </div>
+
+                <!-- Tên khách hàng (Chữ to & đậm) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Tên Khách Hàng</label>
+                    <input type="text" id="customerName" placeholder="Nhập tên khách..." class="w-full px-4 py-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-base md:text-lg font-bold text-slate-800">
+                </div>
+
+                <!-- Các dịch vụ -->
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Chọn nhanh dịch vụ (Bấm để cộng dồn):</label>
+                    <div id="serviceListContainer" class="grid grid-cols-2 gap-2 max-h-44 md:max-h-48 overflow-y-auto pr-1">
+                        <!-- Danh sách dịch vụ nạp bằng JS -->
+                    </div>
+                </div>
+
+                <!-- Tổng tiền tự động (Chữ rất to & đậm) -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-sm font-semibold text-slate-700">Tổng tiền thanh toán (VNĐ)</label>
+                        <button onclick="resetAmountOnly()" class="text-xs text-red-500 hover:text-red-700 font-bold">
+                            <i class="fa-solid fa-rotate-left"></i> Đặt lại tiền
+                        </button>
+                    </div>
+                    <input type="text" id="totalAmountDisplay" readonly placeholder="0đ" class="w-full px-4 py-4 text-xl md:text-2xl font-black text-pink-600 bg-slate-50 border-2 border-slate-300 rounded-xl cursor-not-allowed">
+                </div>
+            </div>
+
+            <!-- Nút thao tác -->
+            <div class="space-y-2">
+                <button onclick="completeAndSave()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3.5 rounded-xl font-bold shadow-md transition flex items-center justify-center gap-2 text-base md:text-lg">
+                    <i class="fa-solid fa-check-circle"></i> Hoàn tất & Lưu giao dịch
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="openHistoryModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition">
+                        <i class="fa-solid fa-list-ul mr-1"></i> Xem lịch sử (<span id="historyCount">0</span>)
+                    </button>
+                    <button onclick="resetForm()" class="flex-1 bg-slate-200 text-slate-700 py-2.5 rounded-xl font-semibold text-xs md:text-sm hover:bg-slate-300 transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Khách tiếp theo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: Hiển thị mã QR VietQR (Phóng to cỡ lớn) -->
+        <div class="p-4 md:p-8 bg-slate-50 flex flex-col items-center justify-between text-center">
+            
+            <div class="w-full">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">Quét mã để thanh toán</h2>
+                    <button onclick="toggleBankConfig()" class="text-xs text-pink-600 hover:text-pink-700 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-pen-to-square"></i> Cấu hình tài khoản
+                    </button>
+                </div>
+
+                <!-- Bảng nhập thông tin ngân hàng -->
+                <div id="bankConfigBox" class="bg-white p-3 rounded-xl border border-slate-200 mb-4 text-left hidden shadow-sm">
+                    <div class="space-y-2 text-xs">
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-0.5">Mã Ngân Hàng (VD: STB, VCB, MB...)</label>
+                            <input type="text" id="inputBankId" value="STB" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md uppercase font-semibold">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-0.5">Số tài khoản</label>
+                            <input type="text" id="inputAccNo" value="060290401898" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md font-mono">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-0.5">Chủ tài khoản (Không dấu viết hoa)</label>
+                            <input type="text" id="inputAccName" value="NGUYEN THI TUONG" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md uppercase">
+                        </div>
+                        <button onclick="saveBankConfig()" class="w-full bg-slate-800 text-white py-1.5 rounded-md font-medium hover:bg-slate-900 transition mt-1">
+                            Cập nhật thông tin
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Khung chứa QR Code (Kích thước phóng to to rõ) -->
+            <div class="my-auto py-2">
+                <div class="bg-white p-4 md:p-5 rounded-2xl shadow-lg border-2 border-slate-200 mb-3 inline-block">
+                    <img id="qrImage" src="" alt="Mã QR Thanh Toán" class="w-64 h-64 md:w-72 md:h-72 object-contain mx-auto hidden">
+                    <div id="qrPlaceholder" class="w-64 h-64 md:w-72 md:h-72 flex flex-col items-center justify-center text-slate-400">
+                        <i class="fa-solid fa-qrcode text-6xl md:text-7xl mb-2"></i>
+                        <p class="text-sm font-medium">Chọn dịch vụ để tạo mã QR</p>
+                    </div>
+                </div>
+
+                <!-- Thông tin tài khoản nhận tiền -->
+                <div class="text-xs md:text-sm text-slate-600 space-y-1">
+                    <p class="font-bold text-slate-900 text-base" id="bankNameDisplay">NGÂN HÀNG (SACOMBANK)</p>
+                    <p>Số tài khoản: <span class="font-mono font-extrabold text-slate-900" id="accNoDisplay">060290401898</span></p>
+                    <p>Chủ tài khoản: <span class="font-bold text-slate-900" id="accNameDisplay">NGUYEN THI TUONG</span></p>
+                </div>
+            </div>
+
+            <div class="mt-2"></div>
+        </div>
+
+    </div>
+
+    <!-- MODAL: Lịch sử giao dịch -->
+    <div id="historyModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-4 md:p-6 shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base md:text-lg font-bold text-slate-800">Lịch sử giao dịch trong ngày</h3>
+                <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="overflow-y-auto flex-1 border border-slate-200 rounded-lg mb-4">
+                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                    <thead class="bg-slate-100 sticky top-0 text-slate-700">
+                        <tr>
+                            <th class="p-2.5 border-b">Thời gian</th>
+                            <th class="p-2.5 border-b">Khách hàng</th>
+                            <th class="p-2.5 border-b text-right">Tổng tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="exportToExcel()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl font-semibold text-xs md:text-sm transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-file-excel"></i> Xuất ra File Excel (.csv)
+                </button>
+                <button onclick="clearHistory()" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-xl font-semibold text-xs md:text-sm transition">
+                    Xóa lịch sử
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Quản lý dịch vụ -->
+    <div id="editModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-md w-full p-4 md:p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base md:text-lg font-bold text-slate-800">Quản lý Dịch vụ & Giá tiền</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div id="modalServiceInputs" class="space-y-3 max-h-60 overflow-y-auto pr-1 mb-4"></div>
+            <div class="flex gap-2">
+                <button onclick="addNewServiceRow()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition">
+                    <i class="fa-solid fa-plus mr-1"></i> Thêm dịch vụ
+                </button>
+                <button onclick="saveServices()" class="flex-1 bg-pink-600 hover:bg-pink-700 text-white py-2.5 rounded-xl font-semibold text-xs md:text-sm transition">
+                    Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script xử lý -->
+    <script>
+        let bankConfig = {
+            id: "STB",
+            no: "060290401898",
+            name: "NGUYEN THI TUONG"
+        };
+
+        let services = [
+            { name: "Cắt tóc", price: 100000 },
+            { name: "Uốn / Duỗi", price: 500000 },
+            { name: "Nhuộm tóc", price: 350000 },
+            { name: "Gội đầu", price: 80000 },
+            { name: "Làm móng", price: 150000 },
+            { name: "Hấp dầu", price: 120000 }
+        ];
+
+        let currentAmount = 0;
+        let transactionHistory = JSON.parse(localStorage.getItem("salon_history")) || [];
+        updateHistoryCount();
+
+        function updateBankDisplay() {
+            document.getElementById("bankNameDisplay").innerText = `NGÂN HÀNG (${bankConfig.id.toUpperCase()})`;
+            document.getElementById("accNoDisplay").innerText = bankConfig.no;
+            document.getElementById("accNameDisplay").innerText = bankConfig.name.toUpperCase();
+        }
+
+        function toggleBankConfig() {
+            document.getElementById("bankConfigBox").classList.toggle("hidden");
+        }
+
+        function saveBankConfig() {
+            const id = document.getElementById("inputBankId").value.trim().toUpperCase();
+            const no = document.getElementById("inputAccNo").value.trim();
+            const name = document.getElementById("inputAccName").value.trim().toUpperCase();
+
+            if (id && no && name) {
+                bankConfig.id = id;
+                bankConfig.no = no;
+                bankConfig.name = name;
+                updateBankDisplay();
+                toggleBankConfig();
+                generateQR();
+            } else {
+                alert("Vui lòng nhập đầy đủ thông tin tài khoản ngân hàng!");
+            }
+        }
+
+        function initServices() {
+            const container = document.getElementById("serviceListContainer");
+            container.innerHTML = "";
+            
+            services.forEach((service) => {
+                const formattedPrice = service.price.toLocaleString('vi-VN') + 'đ';
+                const btn = document.createElement("button");
+                btn.className = "text-left px-3.5 py-2.5 border-2 border-slate-200 rounded-xl hover:bg-pink-50 hover:border-pink-300 transition text-sm flex flex-col justify-between shadow-xs";
+                btn.onclick = () => addServicePrice(service.price);
+                btn.innerHTML = `
+                    <div class="font-bold text-slate-800 truncate">${service.name}</div>
+                    <div class="text-xs text-pink-600 font-extrabold mt-1">${formattedPrice}</div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function addServicePrice(price) {
+            currentAmount += price;
+            document.getElementById("totalAmountDisplay").value = currentAmount.toLocaleString('vi-VN') + 'đ';
+            generateQR();
+        }
+
+        function resetAmountOnly() {
+            currentAmount = 0;
+            document.getElementById("totalAmountDisplay").value = "";
+            generateQR();
+        }
+
+        function generateQR() {
+            const qrImage = document.getElementById("qrImage");
+            const qrPlaceholder = document.getElementById("qrPlaceholder");
+
+            if (currentAmount > 0) {
+                const qrUrl = `https://img.vietqr.io/image/${bankConfig.id}-${bankConfig.no}-compact2.png?amount=${currentAmount}&addInfo=Thanh%20toan%20toc&accountName=${encodeURIComponent(bankConfig.name)}`;
+                
+                qrImage.src = qrUrl;
+                qrImage.classList.remove("hidden");
+                qrPlaceholder.classList.add("hidden");
+            } else {
+                qrImage.classList.add("hidden");
+                qrPlaceholder.classList.remove("hidden");
+            }
+        }
+
+        function completeAndSave() {
+            if (currentAmount <= 0) {
+                alert("Vui lòng chọn ít nhất một dịch vụ cho khách!");
+                return;
+            }
+
+            const customerName = document.getElementById("customerName").value.trim() || "Khách lẻ";
+            const now = new Date();
+            const timeString = now.toLocaleDateString('vi-VN') + ' ' + now.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+
+            const transaction = {
+                time: timeString,
+                name: customerName,
+                amount: currentAmount
+            };
+
+            transactionHistory.unshift(transaction);
+            localStorage.setItem("salon_history", JSON.stringify(transactionHistory));
+            updateHistoryCount();
+
+            alert(`Đã lưu giao dịch của khách: ${customerName} (${currentAmount.toLocaleString('vi-VN')}đ)`);
+            resetForm();
+        }
+
+        function updateHistoryCount() {
+            document.getElementById("historyCount").innerText = transactionHistory.length;
+        }
+
+        function openHistoryModal() {
+            const tbody = document.getElementById("historyTableBody");
+            tbody.innerHTML = "";
+
+            if (transactionHistory.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-400">Chưa có giao dịch nào được lưu.</td></tr>`;
+            } else {
+                transactionHistory.forEach(tx => {
+                    const row = document.createElement("tr");
+                    row.className = "border-b hover:bg-slate-50";
+                    row.innerHTML = `
+                        <td class="p-3 text-slate-500">${tx.time}</td>
+                        <td class="p-3 font-semibold text-slate-900">${tx.name}</td>
+                        <td class="p-3 text-right font-bold text-pink-600">${tx.amount.toLocaleString('vi-VN')}đ</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            document.getElementById("historyModal").classList.remove("hidden");
+        }
+
+        function closeHistoryModal() {
+            document.getElementById("historyModal").classList.add("hidden");
+        }
+
+        function clearHistory() {
+            if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử giao dịch không?")) {
+                transactionHistory = [];
+                localStorage.removeItem("salon_history");
+                updateHistoryCount();
+                openHistoryModal();
+            }
+        }
+
+        function exportToExcel() {
+            if (transactionHistory.length === 0) {
+                alert("Không có dữ liệu để xuất!");
+                return;
+            }
+
+            let csvContent = "\uFEFFThời gian,Tên khách hàng,Tổng tiền (VNĐ)\n";
+            transactionHistory.forEach(tx => {
+                csvContent += `"${tx.time}","${tx.name}",${tx.amount}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `LichSuGiaoDich.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetForm() {
+            currentAmount = 0;
+            document.getElementById("totalAmountDisplay").value = "";
+            document.getElementById("customerName").value = "";
+            generateQR();
+        }
+
+        function openEditModal() {
+            const modalInputs = document.getElementById("modalServiceInputs");
+            modalInputs.innerHTML = "";
+            
+            services.forEach((s) => {
+                const row = document.createElement("div");
+                row.className = "flex gap-2 items-center";
+                row.innerHTML = `
+                    <input type="text" value="${s.name}" class="service-name-input flex-1 px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-pink-500" placeholder="Tên dịch vụ">
+                    <input type="number" value="${s.price}" class="service-price-input w-28 px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-pink-500" placeholder="Giá">
+                    <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 px-2"><i class="fa-solid fa-trash"></i></button>
+                `;
+                modalInputs.appendChild(row);
+            });
+
+            document.getElementById("editModal").classList.remove("hidden");
+        }
+
+        function closeEditModal() {
+            document.getElementById("editModal").classList.add("hidden");
+        }
+
+        function addNewServiceRow() {
+            const modalInputs = document.getElementById("modalServiceInputs");
+            const row = document.createElement("div");
+            row.className = "flex gap-2 items-center";
+            row.innerHTML = `
+                <input type="text" value="" class="service-name-input flex-1 px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-pink-500" placeholder="Tên dịch vụ mới">
+                <input type="number" value="" class="service-price-input w-28 px-3.5 py-2 border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-pink-500" placeholder="Giá">
+                <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 px-2"><i class="fa-solid fa-trash"></i></button>
+            `;
+            modalInputs.appendChild(row);
+        }
+
+        function saveServices() {
+            const nameInputs = document.querySelectorAll(".service-name-input");
+            const priceInputs = document.querySelectorAll(".service-price-input");
+            
+            let newServices = [];
+            for (let i = 0; i < nameInputs.length; i++) {
+                const name = nameInputs[i].value.trim();
+                const price = parseInt(priceInputs[i].value) || 0;
+                if (name !== "" && price > 0) {
+                    newServices.push({ name, price });
+                }
+            }
+
+            if (newServices.length > 0) {
+                services = newServices;
+                initServices();
+                closeEditModal();
+            } else {
+                alert("Vui lòng nhập ít nhất một dịch vụ hợp lệ kèm theo giá tiền!");
+            }
+        }
+
+        updateBankDisplay();
+        initServices();
+    </script>
+</body>
+</html>
