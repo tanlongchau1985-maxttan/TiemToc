@@ -2974,5 +2974,292 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
 })();
 </script>
 
+
+<!-- V13.5: iPad landscape + bank settings persistence hard fix -->
+<style id="v13-5-ipad-layout-fix">
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+input,select,textarea,button{max-width:100%;min-width:0}
+
+/* Tablet/iPad: use the whole viewport and prevent old desktop rules from overflowing. */
+@media (max-width:1366px){
+  .app{width:100%!important;max-width:100%!important}
+  main,.main,.content,.main-content{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  .page,.card,.formgrid,.row,.two,.grid4,.service-grid,.pos{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #settings .formgrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  #settings input,#settings select{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+
+/* iPad/tablet landscape */
+@media (min-width:700px) and (max-width:1366px) and (orientation:landscape){
+  body{padding-bottom:0!important}
+  .main,main,.content,.main-content{
+    padding:12px 14px 88px!important;
+  }
+  .header{
+    margin-bottom:10px!important;
+  }
+
+  /* POS fits landscape without horizontal overflow */
+  #pos>.pos,
+  #pos .pos,
+  #pos .pos-layout,
+  #pos .pos-grid{
+    width:100%!important;
+    max-width:1180px!important;
+    margin:0 auto!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1.18fr) minmax(350px,.82fr)!important;
+    gap:12px!important;
+    align-items:start!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+  #pos .card{
+    min-width:0!important;
+    width:100%!important;
+  }
+  #serviceCards,.service-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+
+  /* Checkout: cart scrolls, controls + QR stay readable */
+  #pos>.pos>.card:last-child,
+  #pos .invoice-panel{
+    max-height:calc(100dvh - 120px)!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  #cart{
+    max-height:28dvh!important;
+    overflow:auto!important;
+    -webkit-overflow-scrolling:touch;
+    flex:0 1 auto!important;
+  }
+  .inline-qr-panel{
+    width:100%!important;
+    max-width:100%!important;
+    margin:10px 0 0!important;
+    padding:10px!important;
+    display:grid!important;
+    grid-template-columns:128px minmax(0,1fr)!important;
+    grid-template-areas:
+      "title title"
+      "qr amount"
+      "qr bank"
+      "qr note"
+      "qr status"!important;
+    gap:6px 12px!important;
+    align-items:center!important;
+    overflow:hidden!important;
+  }
+  .inline-qr-title{grid-area:title!important;margin:0!important}
+  .inline-qr-image-wrap{
+    grid-area:qr!important;
+    width:128px!important;
+    height:128px!important;
+    max-width:128px!important;
+    margin:0!important;
+  }
+  .inline-qr-image{
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+  }
+  .inline-qr-amount{
+    grid-area:amount!important;
+    font-size:24px!important;
+    margin:0!important;
+    text-align:left!important;
+    white-space:normal!important;
+  }
+  .inline-qr-bank{grid-area:bank!important;margin:0!important;text-align:left!important;overflow-wrap:anywhere!important}
+  .inline-qr-note{grid-area:note!important;margin:0!important;text-align:left!important;overflow-wrap:anywhere!important}
+  .inline-qr-status{grid-area:status!important;margin:0!important;text-align:left!important;overflow-wrap:anywhere!important}
+
+  /* Drawer never becomes wider than the tablet */
+  .salon-drawer,.sidebar{
+    max-width:min(420px,72vw)!important;
+  }
+
+  /* Settings are comfortable in landscape */
+  #settings{
+    width:100%!important;
+    max-width:1100px!important;
+    margin:0 auto!important;
+  }
+  #settings .card{
+    overflow:visible!important;
+  }
+  #settings .formgrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+/* Portrait tablets */
+@media (min-width:700px) and (max-width:1100px) and (orientation:portrait){
+  .main,main,.content,.main-content{padding:12px 12px 88px!important}
+  #pos>.pos,#pos .pos,#pos .pos-layout,#pos .pos-grid{
+    display:block!important;
+    width:100%!important;
+    max-width:820px!important;
+    margin:0 auto!important;
+    height:auto!important;
+  }
+  #serviceCards,.service-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #settings{max-width:820px!important;margin:0 auto!important}
+}
+
+/* Small phones keep one-column settings. */
+@media (max-width:699px){
+  #settings .formgrid{grid-template-columns:1fr!important}
+}
+</style>
+
+<script id="v13-5-storage-and-orientation-fix">
+(function(){
+  const STORAGE_KEY = 'hairSalonPosTaxV1';
+  let bankSaveTimer = null;
+
+  function storageAvailable(){
+    try{
+      const k='__salon_storage_test__';
+      localStorage.setItem(k,'1');
+      localStorage.removeItem(k);
+      return true;
+    }catch(e){ return false; }
+  }
+
+  function ensureSettings(){
+    if(typeof state === 'undefined') return false;
+    if(!state.settings) state.settings={};
+    const defaults = (typeof defaultState!=='undefined' && defaultState.settings) ? defaultState.settings : {};
+    state.settings = Object.assign({}, defaults, state.settings);
+    return true;
+  }
+
+  function writeState(showError){
+    if(!ensureSettings()) return false;
+    if(!storageAvailable()){
+      if(showError) alert('Safari đang chặn bộ nhớ của trang. Hãy mở bằng tab Safari bình thường (không dùng Duyệt riêng tư), rồi thử lưu lại.');
+      return false;
+    }
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const check = JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+      if(!check.settings) throw new Error('Không đọc lại được dữ liệu');
+      return true;
+    }catch(err){
+      console.error('Hair Salon save error:', err);
+      if(showError) alert('Không lưu được dữ liệu trên iPad. Hãy kiểm tra Safari không ở chế độ Duyệt riêng tư và còn dung lượng lưu trữ.');
+      return false;
+    }
+  }
+
+  function readText(id){
+    const el=document.getElementById(id);
+    return el ? String(el.value||'').trim() : '';
+  }
+  function readNum(id){
+    const el=document.getElementById(id);
+    return el ? (Number(el.value)||0) : 0;
+  }
+
+  /* Replace old saveSettings with a Safari/iPad-safe version. */
+  window.saveSettings = function(){
+    if(!ensureSettings()) return;
+    ['shopName','taxCode','shopPhone','shopAddress','bankCode','bankAccount','bankAccountName','qrTemplate']
+      .forEach(k=>state.settings[k]=readText(k));
+    ['taxThreshold','vatService','vatProduct','pitService','pitProduct','pitRevenueMethodMax']
+      .forEach(k=>state.settings[k]=readNum(k));
+
+    if(writeState(true)){
+      try{ if(typeof refreshAll==='function') refreshAll(); }catch(e){}
+      try{ if(typeof updateInlinePaymentQR==='function') updateInlinePaymentQR(); }catch(e){}
+      alert('Đã lưu cài đặt trên thiết bị này.');
+    }
+  };
+  try{ saveSettings = window.saveSettings; }catch(e){}
+
+  /* Bank details auto-save on the owner's device while typing. */
+  function autoSaveBank(){
+    if(!ensureSettings()) return;
+    ['bankCode','bankAccount','bankAccountName','qrTemplate'].forEach(k=>state.settings[k]=readText(k));
+    writeState(false);
+    try{ if(typeof updateInlinePaymentQR==='function') updateInlinePaymentQR(); }catch(e){}
+  }
+
+  function bindSettings(){
+    ensureSettings();
+    try{ if(typeof loadSettings==='function') loadSettings(); }catch(e){}
+    ['bankCode','bankAccount','bankAccountName','qrTemplate'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el || el.dataset.v135Bound) return;
+      el.dataset.v135Bound='1';
+      const fn=()=>{
+        clearTimeout(bankSaveTimer);
+        bankSaveTimer=setTimeout(autoSaveBank,250);
+      };
+      el.addEventListener('input',fn,{passive:true});
+      el.addEventListener('change',fn,{passive:true});
+      el.addEventListener('blur',autoSaveBank,{passive:true});
+    });
+
+    const saveBtn=[...document.querySelectorAll('#settings button')].find(b=>/Lưu cài đặt/i.test(b.textContent||''));
+    if(saveBtn){
+      saveBtn.onclick=function(e){
+        if(e) e.preventDefault();
+        window.saveSettings();
+        return false;
+      };
+    }
+  }
+
+  function setOrientationClass(){
+    const w = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+    const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    document.body.classList.toggle('tablet-landscape', w>=700 && w<=1366 && w>h);
+    document.body.classList.toggle('tablet-portrait', w>=700 && w<=1100 && h>=w);
+    document.documentElement.style.setProperty('--app-vh', h+'px');
+  }
+
+  function relayout(){
+    setOrientationClass();
+    try{ if(typeof updateInlinePaymentQR==='function') updateInlinePaymentQR(); }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    bindSettings();
+    relayout();
+  });
+  window.addEventListener('load',()=>{bindSettings();relayout();});
+  window.addEventListener('resize',()=>setTimeout(relayout,80));
+  window.addEventListener('orientationchange',()=>setTimeout(relayout,250));
+  if(window.visualViewport) window.visualViewport.addEventListener('resize',()=>setTimeout(relayout,60));
+
+  /* Single-file GitHub/WebHub build: remove stale service workers from older versions. */
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});
+  }
+})();
+</script>
+
 </body>
 </html>
