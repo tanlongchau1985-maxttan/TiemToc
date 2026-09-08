@@ -1,0 +1,2842 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Salon POS">
+<title>HAIR SALON THU TƯỜNG - MOBILE/TABLET V13.1</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --text:#152033; --muted:#6f7b8d; --line:#e7ebf2;
+  --primary:#3568ff; --green:#14a673; --orange:#f59e0b; --red:#e74c3c; --purple:#7c3aed;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 10px 24px}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#3568ff,#7c3aed);display:grid;place-items:center;color:#fff;font-size:22px}
+.brand b{font-size:16px}.brand small{display:block;color:var(--muted);margin-top:3px}
+.nav button{width:100%;border:0;background:transparent;text-align:left;padding:12px 13px;border-radius:11px;margin:3px 0;color:#445067;cursor:pointer}
+.nav button.active{background:#edf2ff;color:#2454db;font-weight:700}
+.nav button:hover{background:#f4f6fa}
+.main{padding:26px;min-width:0}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.header h1{font-size:24px;margin:0}.date{color:var(--muted);font-size:13px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:17px}
+.stat span{color:var(--muted);font-size:13px}.stat strong{display:block;font-size:24px;margin-top:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px;margin-top:16px}
+.card h3{margin:0 0 14px;font-size:16px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input,select{border:1px solid #d9dfeb;border-radius:9px;padding:10px 11px;background:#fff;outline:none}
+input:focus,select:focus{border-color:#8ba8ff;box-shadow:0 0 0 3px #edf2ff}
+.btn{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;font-weight:650}
+.primary{background:var(--primary);color:#fff}.green{background:var(--green);color:#fff}.orange{background:var(--orange);color:#fff}.danger{background:var(--red);color:#fff}.ghost{background:#eef1f6;color:#344054}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:11px 9px;border-bottom:1px solid var(--line);text-align:left}
+th{color:#5d697d;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+.money{text-align:right;font-variant-numeric:tabular-nums}
+.page{display:none}.page.active{display:block}
+.pos{display:grid;grid-template-columns:1.45fr .9fr;gap:16px}
+.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.service{border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px;cursor:pointer;transition:.15s}
+.service:hover{border-color:#91aaff;transform:translateY(-1px)}
+.service .name{font-weight:700}.service .price{color:var(--primary);margin-top:6px}
+.cart-line{display:grid;grid-template-columns:1fr 50px 90px 30px;gap:8px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line)}
+.total{display:flex;justify-content:space-between;font-size:22px;font-weight:800;margin-top:14px}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3456c4}
+.note{background:#fff8e8;border:1px solid #ffe3a4;padding:12px;border-radius:10px;color:#795600;font-size:13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.formgrid label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
+.formgrid input,.formgrid select{width:100%}
+.taxbox{padding:14px;border-radius:12px;background:#f7f9ff;border:1px solid #dfe7ff}
+.taxbox b{display:block;font-size:20px;margin-top:5px}
+.footer{color:#8993a5;font-size:12px;text-align:center;margin:24px}
+@media(max-width:950px){.app{grid-template-columns:78px 1fr}.brand .txt,.nav .label{display:none}.brand{justify-content:center}.nav button{text-align:center}.grid4{grid-template-columns:repeat(2,1fr)}.pos,.two{grid-template-columns:1fr}.service-grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.app{display:block}.sidebar{height:auto;position:sticky;z-index:20;display:flex;padding:8px;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}.brand{display:none}.nav{display:flex}.nav button{white-space:nowrap;width:auto}.nav .label{display:inline}.main{padding:14px}.grid4{grid-template-columns:1fr 1fr}.service-grid{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}.header{align-items:flex-start}}
+@media print{.sidebar,.header,.no-print{display:none!important}.app{display:block}.main{padding:0}.page{display:none!important}#receiptPrint{display:block!important}}
+
+/* PRO MOBILE */
+body{background:linear-gradient(180deg,#f8fafc,#eef2f7)}
+.sidebar{background:linear-gradient(180deg,#0f172a,#172554);border:0;box-shadow:8px 0 30px rgba(15,23,42,.08)}
+.brand b{color:#fff}.brand small{color:#a5b4fc}
+.logo{background:linear-gradient(135deg,#38bdf8,#6366f1)}
+.nav button{color:#cbd5e1;font-weight:600}
+.nav button:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav button.active{background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.28)}
+.header{background:rgba(255,255,255,.9);backdrop-filter:blur(14px);border:1px solid #e2e8f0;padding:15px 18px;border-radius:18px;box-shadow:0 10px 30px rgba(15,23,42,.07)}
+.card,.stat{border-color:#e2e8f0;box-shadow:0 10px 30px rgba(15,23,42,.07);border-radius:18px}
+.primary{background:linear-gradient(135deg,#2563eb,#4f46e5)}
+.green{background:linear-gradient(135deg,#059669,#10b981)}
+.orange{background:linear-gradient(135deg,#ea580c,#f59e0b)}
+.service{box-shadow:0 5px 15px rgba(15,23,42,.05);min-height:108px}
+.mobile-bottom,.fab-pos{display:none}
+@media(max-width:700px){
+ body{padding-bottom:82px;background:#f4f7fb}
+ .app{display:block}.sidebar{display:none}.main{padding:11px}
+ .header{margin-bottom:11px;padding:12px 14px;border-radius:16px}.header h1{font-size:19px}.header .row{display:none}.date{font-size:11px}
+ .grid4{grid-template-columns:1fr 1fr;gap:9px}.stat{padding:13px;border-radius:15px}.stat span{font-size:11px}.stat strong{font-size:17px}
+ .card{padding:14px;border-radius:16px;margin-top:10px}.card h3{font-size:15px}
+ .service-grid{grid-template-columns:1fr 1fr;gap:8px}.service{padding:12px;min-height:100px;border-radius:15px}.service .name{font-size:14px}.service .price{font-weight:800}
+ .pos,.two{grid-template-columns:1fr}.pos>.card:last-child{margin-top:10px!important}
+ .formgrid{grid-template-columns:1fr 1fr;gap:8px}
+ input,select{min-height:44px;font-size:14px;max-width:100%}.btn{min-height:42px}
+ table{min-width:720px}
+ .mobile-bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);border-top:1px solid #e2e8f0;padding:7px 5px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(15,23,42,.08)}
+ .mobile-bottom button{border:0;background:none;color:#64748b;font-size:10px;font-weight:700;padding:3px 1px}.mobile-bottom button i{display:block;font-style:normal;font-size:21px;line-height:25px}.mobile-bottom button.active{color:#2563eb}
+ .fab-pos{display:grid;position:fixed;right:17px;bottom:88px;width:56px;height:56px;border-radius:50%;place-items:center;border:0;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;font-size:25px;box-shadow:0 12px 28px rgba(37,99,235,.38);z-index:90}
+}
+@media(max-width:390px){.main{padding:8px}.stat strong{font-size:15px}.formgrid{grid-template-columns:1fr}}
+
+.qr-modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:9999;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)}
+.qr-modal.show{display:flex}
+.qr-box{width:min(440px,100%);background:#fff;border-radius:24px;padding:20px;box-shadow:0 30px 80px rgba(15,23,42,.3);text-align:center}
+.qr-box h2{margin:0 0 6px;font-size:21px}
+.qr-box .bank-card{background:linear-gradient(135deg,#eff6ff,#eef2ff);border:1px solid #dbeafe;border-radius:16px;padding:13px;margin:13px 0;text-align:left}
+.qr-box img{width:min(300px,78vw);height:auto;border-radius:16px;border:1px solid #e2e8f0;background:#fff}
+.qr-amount{font-size:30px;font-weight:900;color:#0f766e;margin:10px 0 4px;letter-spacing:-.04em}
+.qr-note{font-size:13px;color:#64748b}
+.qr-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.qr-actions .btn{width:100%}
+.pay-qr-btn{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff}
+@media(max-width:700px){
+ .qr-box{border-radius:22px;padding:16px}
+ .qr-amount{font-size:26px}
+ .qr-actions{grid-template-columns:1fr}
+}
+
+
+/* ===== INLINE AUTO QR V5 ===== */
+.inline-qr-panel{
+  margin-top:14px;
+  border:1px solid #dbeafe;
+  background:linear-gradient(180deg,#f8fbff,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  text-align:center;
+}
+.inline-qr-title{font-size:15px;font-weight:800;color:#0f172a;margin-bottom:3px}
+.inline-qr-sub{font-size:12px;color:#64748b;margin-bottom:10px}
+.inline-qr-amount{font-size:28px;font-weight:900;color:#0f766e;letter-spacing:-.04em;margin:5px 0 10px}
+.inline-qr-image-wrap{
+  display:flex;align-items:center;justify-content:center;
+  width:min(290px,100%);aspect-ratio:1/1;margin:0 auto;
+  border-radius:18px;background:#fff;border:1px solid #e2e8f0;overflow:hidden;
+}
+.inline-qr-image{display:none;width:100%;height:100%;object-fit:contain}
+.inline-qr-placeholder{padding:22px;color:#64748b;font-size:13px;line-height:1.55}
+.inline-qr-bank{margin-top:10px;font-size:12px;color:#334155;line-height:1.5}
+.inline-qr-note{margin-top:7px;font-size:12px;color:#64748b;word-break:break-word}
+.inline-qr-status{margin-top:8px;font-size:12px;font-weight:700;color:#2563eb}
+@media(max-width:700px){
+ .inline-qr-panel{padding:13px;border-radius:16px}
+ .inline-qr-amount{font-size:24px}
+ .inline-qr-image-wrap{width:min(260px,82vw)}
+}
+
+
+/* =========================================================
+   SALON MANAGER PRO V7 - PINK MOBILE THEME
+   ========================================================= */
+:root{
+  --pink:#f72585;
+  --pink2:#ff4fa0;
+  --pink3:#ff8fc4;
+  --pink-soft:#fff0f7;
+  --pink-soft2:#ffe3f0;
+  --ink:#2d1730;
+  --muted:#856879;
+  --line:#f6c8dd;
+  --white:#ffffff;
+  --shadow:0 12px 34px rgba(247,37,133,.12);
+}
+body{
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,143,196,.18), transparent 28%),
+    linear-gradient(180deg,#fff8fc 0%,#fff 42%,#fff8fc 100%) !important;
+  color:var(--ink) !important;
+}
+.sidebar{
+  background:linear-gradient(180deg,#fff 0%,#fff5fa 100%) !important;
+  border-right:1px solid var(--line) !important;
+  box-shadow:10px 0 34px rgba(247,37,133,.06) !important;
+}
+.brand,.logo,.sidebar h1,.sidebar h2{
+  color:var(--pink) !important;
+}
+.menu-item,.nav-item,.sidebar button{
+  border-radius:14px !important;
+}
+.menu-item.active,.nav-item.active,.sidebar button.active,
+.menu-item:hover,.nav-item:hover,.sidebar button:hover{
+  background:linear-gradient(135deg,var(--pink),var(--pink2)) !important;
+  color:white !important;
+  box-shadow:0 8px 22px rgba(247,37,133,.22) !important;
+}
+.card,.panel,.stat-card,.service-card,.product-card,.box{
+  border:1px solid #f8d4e5 !important;
+  box-shadow:var(--shadow) !important;
+}
+.card:hover,.service-card:hover,.product-card:hover{
+  border-color:#f6a9cb !important;
+}
+.btn-primary,.primary,.btn.primary,
+button.btn-primary,button.primary{
+  background:linear-gradient(135deg,var(--pink),var(--pink2)) !important;
+  border-color:transparent !important;
+  color:white !important;
+  box-shadow:0 8px 22px rgba(247,37,133,.20) !important;
+}
+.btn-primary:hover,.primary:hover,.btn.primary:hover{
+  filter:brightness(.98);
+  transform:translateY(-1px);
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--pink) !important;
+  box-shadow:0 0 0 3px rgba(247,37,133,.10) !important;
+}
+.badge,.chip,.tag{
+  background:var(--pink-soft) !important;
+  color:#c91867 !important;
+  border-color:#f7c3da !important;
+}
+.total,.cart-total,.checkout-total{
+  background:linear-gradient(135deg,#fff0f7,#ffe3f0) !important;
+  border-color:#f7bdd8 !important;
+  color:#c91867 !important;
+}
+#cartTotal{
+  color:var(--pink) !important;
+  font-size:28px !important;
+  font-weight:900 !important;
+}
+.inline-qr-panel{
+  border:2px solid #f7a9cd !important;
+  background:linear-gradient(180deg,#fff 0%,#fff0f7 100%) !important;
+  box-shadow:0 12px 30px rgba(247,37,133,.12) !important;
+}
+.inline-qr-title{
+  color:var(--pink) !important;
+  font-weight:900 !important;
+}
+.inline-qr-amount{
+  color:var(--pink) !important;
+}
+.inline-qr-image-wrap{
+  border:2px solid #ffd0e4 !important;
+  box-shadow:inset 0 0 0 6px #fff7fb !important;
+}
+.inline-qr-status{
+  color:#d81b70 !important;
+}
+table thead th{
+  background:#fff0f7 !important;
+  color:#b21660 !important;
+}
+.bottom-nav{
+  background:rgba(255,255,255,.96) !important;
+  border-top:1px solid var(--line) !important;
+  box-shadow:0 -10px 30px rgba(247,37,133,.08) !important;
+}
+.bottom-nav button.active,
+.bottom-nav .active{
+  color:var(--pink) !important;
+}
+.fab,.floating-pos{
+  background:linear-gradient(135deg,var(--pink),var(--pink2)) !important;
+  box-shadow:0 12px 28px rgba(247,37,133,.30) !important;
+}
+h1,h2,h3,.page-title{
+  color:#9c174f !important;
+}
+.kpi .value,.stat-card .value,.metric .value{
+  color:var(--pink) !important;
+}
+@media(max-width:700px){
+  body{padding-bottom:84px !important;}
+  .card,.panel,.stat-card{border-radius:18px !important;}
+  .service-card,.product-card{border-radius:16px !important;}
+  button,.btn{min-height:44px;}
+  input,select,textarea{min-height:44px;}
+}
+
+
+.reset-amount-btn{
+  width:100%;
+  margin-top:10px;
+  min-height:46px;
+  border:1.5px solid #f72585 !important;
+  background:#fff !important;
+  color:#e91e73 !important;
+  font-weight:850 !important;
+  border-radius:14px !important;
+  cursor:pointer;
+}
+.reset-amount-btn:hover{
+  background:#fff0f7 !important;
+  box-shadow:0 8px 20px rgba(247,37,133,.12) !important;
+}
+
+
+
+/* =========================================================
+   HAIR SALON MANAGER PRO V8 - APPROVED PINK APP UI
+   Responsive: phone + desktop
+   ========================================================= */
+:root{
+  --salon-pink:#f72585;
+  --salon-pink-2:#ff4fa0;
+  --salon-pink-3:#ff7fbb;
+  --salon-pale:#fff1f7;
+  --salon-pale-2:#ffe5f1;
+  --salon-ink:#251a2a;
+  --salon-muted:#8b7583;
+  --salon-line:#f4cadd;
+  --salon-white:#fff;
+  --salon-success:#18a566;
+  --salon-shadow:0 16px 42px rgba(247,37,133,.12);
+  --salon-radius:22px;
+}
+html{background:#fff7fb}
+body{
+  background:
+    radial-gradient(circle at 12% 2%,rgba(247,37,133,.10),transparent 26%),
+    radial-gradient(circle at 88% 8%,rgba(255,127,187,.12),transparent 23%),
+    linear-gradient(180deg,#fff8fc 0%,#fff 42%,#fff7fb 100%) !important;
+  color:var(--salon-ink)!important;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+
+/* Desktop shell: premium app card */
+.app,.app-shell,.layout,.main-wrap{
+  max-width:1440px;
+  margin:0 auto;
+}
+main,.main,.content,.main-content{
+  background:transparent!important;
+}
+.sidebar{
+  background:linear-gradient(180deg,#fff,#fff6fb)!important;
+  border-right:1px solid var(--salon-line)!important;
+}
+.brand,.brand-title,.logo,.sidebar h1,.sidebar h2{
+  color:var(--salon-pink)!important;
+}
+.brand::after,.logo::after{
+  content:"";
+  display:block;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.18em;
+  color:#6e5667;
+  margin-top:2px;
+}
+.menu-item,.nav-item,.sidebar button{
+  border-radius:15px!important;
+  transition:.18s ease;
+}
+.menu-item.active,.nav-item.active,.sidebar button.active{
+  background:linear-gradient(135deg,var(--salon-pink),var(--salon-pink-2))!important;
+  color:#fff!important;
+  box-shadow:0 10px 25px rgba(247,37,133,.22)!important;
+}
+.menu-item:hover,.nav-item:hover,.sidebar button:hover{
+  background:#fff0f7!important;
+  color:var(--salon-pink)!important;
+}
+
+/* Topbar */
+.topbar,.header,.page-header{
+  background:rgba(255,255,255,.84)!important;
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(244,202,221,.75)!important;
+}
+h1,h2,h3,.page-title{color:#b51d61!important}
+
+/* Cards / tiles */
+.card,.panel,.stat-card,.service-card,.product-card,.box,.summary-card{
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid #f5d3e3!important;
+  border-radius:var(--salon-radius)!important;
+  box-shadow:var(--salon-shadow)!important;
+}
+.stat-card,.summary-card{
+  position:relative;
+  overflow:hidden;
+}
+.stat-card::before,.summary-card::before{
+  content:"";
+  position:absolute;inset:0 auto 0 0;width:5px;
+  background:linear-gradient(180deg,var(--salon-pink),var(--salon-pink-3));
+}
+.kpi .value,.stat-card .value,.metric .value{
+  color:var(--salon-pink)!important;
+  font-weight:900!important;
+}
+
+/* Buttons */
+.btn,button{
+  border-radius:14px!important;
+}
+.btn-primary,.primary,.btn.primary,button.btn-primary,button.primary{
+  background:linear-gradient(135deg,var(--salon-pink),var(--salon-pink-2))!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  font-weight:800!important;
+  box-shadow:0 9px 22px rgba(247,37,133,.20)!important;
+}
+.btn-secondary,.secondary{
+  background:#fff!important;
+  color:var(--salon-pink)!important;
+  border:1.5px solid var(--salon-pink)!important;
+}
+.reset-amount-btn{
+  background:#fff!important;
+  color:var(--salon-pink)!important;
+  border:1.5px solid var(--salon-pink)!important;
+}
+
+/* Inputs */
+input,select,textarea{
+  border:1px solid #efd4e0!important;
+  background:#fff!important;
+  border-radius:13px!important;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--salon-pink)!important;
+  box-shadow:0 0 0 3px rgba(247,37,133,.10)!important;
+}
+
+/* POS cards */
+.service-card,.product-card{
+  transition:.18s ease;
+}
+.service-card:hover,.product-card:hover{
+  transform:translateY(-2px);
+  border-color:#f3a7ca!important;
+}
+.service-card .price,.product-card .price,.price{
+  color:var(--salon-pink)!important;
+  font-weight:900!important;
+}
+
+/* Checkout total */
+.total,.cart-total,.checkout-total{
+  background:linear-gradient(135deg,#fff0f7,#ffe1ef)!important;
+  border:1px solid #f6bed8!important;
+  border-radius:16px!important;
+  color:#c61c68!important;
+  padding:14px 16px!important;
+}
+#cartTotal{
+  color:var(--salon-pink)!important;
+  font-size:30px!important;
+  font-weight:950!important;
+  letter-spacing:-.03em;
+}
+
+/* QR panel modeled after approved mockup */
+.inline-qr-panel{
+  display:grid!important;
+  grid-template-columns:minmax(190px,260px) 1fr;
+  grid-template-areas:
+    "title title"
+    "qr amount"
+    "qr bank"
+    "qr note"
+    "qr status";
+  gap:8px 16px;
+  align-items:center;
+  border:2px solid #f3a7ca!important;
+  background:linear-gradient(180deg,#fff,#fff3f8)!important;
+  border-radius:22px!important;
+  padding:18px!important;
+  box-shadow:0 14px 34px rgba(247,37,133,.12)!important;
+  text-align:left!important;
+}
+.inline-qr-title{
+  grid-area:title;
+  text-align:center;
+  font-size:17px!important;
+  font-weight:950!important;
+  color:var(--salon-pink)!important;
+}
+.inline-qr-sub{display:none!important}
+.inline-qr-amount{
+  grid-area:amount;
+  background:linear-gradient(135deg,var(--salon-pink),var(--salon-pink-2));
+  color:#fff!important;
+  border-radius:16px;
+  text-align:center;
+  padding:12px 14px;
+  font-size:28px!important;
+  font-weight:950!important;
+}
+.inline-qr-image-wrap{
+  grid-area:qr;
+  width:100%!important;
+  max-width:240px!important;
+  justify-self:center;
+  border:1px solid #f6bfd8!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  box-shadow:inset 0 0 0 6px #fff7fb!important;
+}
+.inline-qr-bank{grid-area:bank;font-weight:700;color:#445!important}
+.inline-qr-note{
+  grid-area:note;
+  background:#fff;
+  border:1px solid #f2d7e3;
+  padding:10px 12px;
+  border-radius:12px;
+  color:#6c5363!important;
+}
+.inline-qr-status{grid-area:status;color:#d7196b!important;font-weight:800!important}
+
+/* Tables */
+table{border-collapse:separate!important;border-spacing:0!important}
+table thead th{
+  background:#fff0f7!important;
+  color:#b91962!important;
+  border-bottom:1px solid #efc8da!important;
+}
+table tbody tr:hover{background:#fff8fb!important}
+
+/* Phone bottom nav */
+.bottom-nav{
+  background:rgba(255,255,255,.97)!important;
+  border-top:1px solid var(--salon-line)!important;
+  box-shadow:0 -8px 28px rgba(247,37,133,.10)!important;
+}
+.bottom-nav button.active,.bottom-nav .active{color:var(--salon-pink)!important}
+.fab,.floating-pos{
+  background:linear-gradient(135deg,var(--salon-pink),var(--salon-pink-2))!important;
+  box-shadow:0 12px 30px rgba(247,37,133,.28)!important;
+}
+
+/* Mobile approved-app proportions */
+@media(max-width:700px){
+  body{background:#fff8fc!important;padding-bottom:86px!important}
+  .sidebar{display:none!important}
+  .content,.main-content,main,.main{
+    width:100%!important;
+    max-width:none!important;
+    padding:12px!important;
+  }
+  .topbar,.header,.page-header{
+    position:sticky;
+    top:0;
+    z-index:30;
+    border-radius:0 0 18px 18px!important;
+  }
+  .card,.panel,.stat-card,.summary-card{
+    border-radius:18px!important;
+    box-shadow:0 8px 24px rgba(247,37,133,.10)!important;
+  }
+  .service-grid,.product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .service-card,.product-card{
+    min-height:116px;
+    padding:12px!important;
+    border-radius:16px!important;
+  }
+  button,.btn{min-height:46px;font-size:14px}
+  input,select,textarea{min-height:45px;font-size:16px}
+  .total,.cart-total,.checkout-total{padding:13px 14px!important}
+  #cartTotal{font-size:26px!important}
+  .inline-qr-panel{
+    display:flex!important;
+    flex-direction:column!important;
+    text-align:center!important;
+    padding:14px!important;
+    gap:8px!important;
+  }
+  .inline-qr-image-wrap{
+    width:min(250px,80vw)!important;
+    max-width:250px!important;
+  }
+  .inline-qr-amount{
+    width:100%;
+    font-size:26px!important;
+  }
+  .inline-qr-bank,.inline-qr-note,.inline-qr-status{width:100%;text-align:center!important}
+  .table-wrap,.table-container{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+}
+
+/* Desktop: elegant two-panel POS feel, roomy but same visual language */
+@media(min-width:701px){
+  .content,.main-content,main,.main{padding:24px!important}
+  .service-grid,.product-grid{
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr))!important;
+  }
+  .inline-qr-panel{max-width:720px}
+}
+
+/* small phones */
+@media(max-width:390px){
+  .content,.main-content,main,.main{padding:9px!important}
+  .service-grid,.product-grid{gap:8px!important}
+  .inline-qr-image-wrap{width:min(220px,78vw)!important}
+}
+
+
+
+/* =========================================================
+   V8.1 DESKTOP F11 / FULLSCREEN BALANCED LAYOUT
+   Mục tiêu: màn hình Tính tiền cân đối, nằm gọn trong 1 trang
+   ========================================================= */
+
+/* Desktop phổ biến */
+@media (min-width: 1000px){
+  html,body{
+    height:100%;
+    overflow:hidden;
+  }
+
+  .app,.app-shell,.layout,.main-wrap{
+    max-width:none !important;
+    width:100% !important;
+    height:100vh !important;
+    min-height:100vh !important;
+  }
+
+  .sidebar{
+    height:100vh !important;
+    position:sticky !important;
+    top:0 !important;
+    overflow-y:auto !important;
+  }
+
+  main,.main,.content,.main-content{
+    height:100vh !important;
+    min-height:0 !important;
+    overflow:hidden !important;
+    padding:18px 22px !important;
+  }
+
+  .topbar,.header,.page-header{
+    min-height:72px !important;
+    height:72px !important;
+    padding:12px 18px !important;
+    margin-bottom:14px !important;
+    border-radius:18px !important;
+  }
+
+  /* Tất cả page/tab chính */
+  .page,.tab-page,.tab-content,.view,.section-page{
+    min-height:0 !important;
+  }
+
+  /* Khu vực POS */
+  #pos,
+  #posPage,
+  #checkout,
+  #sales,
+  #sale,
+  [data-page="pos"],
+  [data-tab="pos"]{
+    height:calc(100vh - 118px) !important;
+    min-height:0 !important;
+    overflow:hidden !important;
+  }
+
+  /* Phần bố cục 2 cột POS - bắt các class grid thường gặp */
+  .pos-layout,
+  .checkout-layout,
+  .sales-layout,
+  .pos-grid,
+  .checkout-grid{
+    display:grid !important;
+    grid-template-columns:minmax(0, 1.6fr) minmax(390px, .95fr) !important;
+    gap:16px !important;
+    height:calc(100vh - 126px) !important;
+    min-height:0 !important;
+    align-items:stretch !important;
+  }
+
+  .pos-layout > *,
+  .checkout-layout > *,
+  .sales-layout > *,
+  .pos-grid > *,
+  .checkout-grid > *{
+    min-height:0 !important;
+    height:100% !important;
+  }
+
+  /* Panel chọn dịch vụ và panel hóa đơn */
+  .pos-products,
+  .product-panel,
+  .services-panel,
+  .catalog-panel,
+  .cart-panel,
+  .invoice-panel,
+  .checkout-panel{
+    height:100% !important;
+    min-height:0 !important;
+    overflow:hidden !important;
+  }
+
+  .service-grid,.product-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:10px !important;
+    align-content:start !important;
+  }
+
+  .service-card,.product-card{
+    min-height:94px !important;
+    padding:13px 14px !important;
+  }
+
+  /* Hóa đơn phải gọn trong chiều cao màn hình */
+  .cart-panel,.invoice-panel,.checkout-panel{
+    display:flex !important;
+    flex-direction:column !important;
+  }
+
+  .cart-items,.invoice-items,.checkout-items{
+    flex:1 1 auto !important;
+    min-height:120px !important;
+    max-height:38vh !important;
+    overflow-y:auto !important;
+    overscroll-behavior:contain;
+    padding-right:3px;
+  }
+
+  /* Tối ưu từng dòng món */
+  .cart-item,.invoice-item,.checkout-item{
+    padding-top:8px !important;
+    padding-bottom:8px !important;
+    margin:0 !important;
+  }
+
+  /* Input khách hàng nhỏ hơn */
+  .customer-row,.customer-fields,.checkout-customer{
+    gap:8px !important;
+    margin-bottom:8px !important;
+  }
+
+  input,select,textarea{
+    min-height:40px !important;
+  }
+
+  /* Tổng tiền + reset gọn */
+  .total,.cart-total,.checkout-total{
+    padding:10px 14px !important;
+    margin-top:8px !important;
+  }
+  #cartTotal{
+    font-size:27px !important;
+  }
+  .reset-amount-btn{
+    min-height:40px !important;
+    margin-top:7px !important;
+    padding:7px 12px !important;
+  }
+
+  /* QR trên desktop: ngang và gọn để không rớt khỏi màn hình */
+  .inline-qr-panel{
+    grid-template-columns:150px minmax(0,1fr) !important;
+    grid-template-areas:
+      "title title"
+      "qr amount"
+      "qr bank"
+      "qr note"
+      "qr status" !important;
+    gap:5px 12px !important;
+    padding:10px 12px !important;
+    margin-top:8px !important;
+    border-radius:17px !important;
+    max-width:none !important;
+    min-height:0 !important;
+  }
+
+  .inline-qr-title{
+    font-size:14px !important;
+    line-height:1.2 !important;
+    margin:0 !important;
+  }
+
+  .inline-qr-image-wrap{
+    width:142px !important;
+    height:142px !important;
+    aspect-ratio:1/1 !important;
+    max-width:142px !important;
+    border-radius:12px !important;
+  }
+
+  .inline-qr-amount{
+    font-size:23px !important;
+    padding:8px 10px !important;
+    border-radius:12px !important;
+  }
+
+  .inline-qr-bank,
+  .inline-qr-note,
+  .inline-qr-status{
+    font-size:11px !important;
+    line-height:1.25 !important;
+    margin:0 !important;
+  }
+  .inline-qr-note{
+    padding:6px 8px !important;
+  }
+
+  /* Nếu có nút cuối hóa đơn */
+  .checkout-actions,.payment-actions,.cart-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+    margin-top:8px !important;
+  }
+  .checkout-actions .btn,
+  .payment-actions .btn,
+  .cart-actions .btn{
+    min-height:42px !important;
+  }
+}
+
+/* Màn Full HD / F11: co nhẹ để mọi thứ nằm trong 1 viewport */
+@media (min-width: 1200px) and (max-height: 950px){
+  main,.main,.content,.main-content{
+    padding:14px 18px !important;
+  }
+
+  .topbar,.header,.page-header{
+    height:64px !important;
+    min-height:64px !important;
+    margin-bottom:10px !important;
+    padding:9px 16px !important;
+  }
+
+  .pos-layout,
+  .checkout-layout,
+  .sales-layout,
+  .pos-grid,
+  .checkout-grid{
+    height:calc(100vh - 96px) !important;
+    gap:12px !important;
+  }
+
+  .service-card,.product-card{
+    min-height:82px !important;
+    padding:10px 12px !important;
+  }
+
+  .cart-items,.invoice-items,.checkout-items{
+    max-height:34vh !important;
+  }
+
+  .inline-qr-image-wrap{
+    width:126px !important;
+    height:126px !important;
+    max-width:126px !important;
+  }
+
+  .inline-qr-panel{
+    grid-template-columns:134px minmax(0,1fr) !important;
+    padding:8px 10px !important;
+  }
+
+  .inline-qr-amount{
+    font-size:21px !important;
+    padding:7px 8px !important;
+  }
+}
+
+/* 1366x768 / laptop nhỏ: ưu tiên không cuộn toàn trang */
+@media (min-width: 1000px) and (max-height: 820px){
+  .sidebar{
+    font-size:13px !important;
+  }
+  .topbar,.header,.page-header{
+    height:58px !important;
+    min-height:58px !important;
+  }
+  .pos-layout,
+  .checkout-layout,
+  .sales-layout,
+  .pos-grid,
+  .checkout-grid{
+    height:calc(100vh - 82px) !important;
+  }
+  .cart-items,.invoice-items,.checkout-items{
+    max-height:28vh !important;
+  }
+  .inline-qr-image-wrap{
+    width:108px !important;
+    height:108px !important;
+    max-width:108px !important;
+  }
+  .inline-qr-panel{
+    grid-template-columns:116px minmax(0,1fr) !important;
+  }
+  .inline-qr-bank,.inline-qr-note,.inline-qr-status{
+    font-size:10px !important;
+  }
+}
+
+/* Mobile giữ cuộn bình thường */
+@media (max-width:999px){
+  html,body{
+    height:auto !important;
+    overflow:auto !important;
+  }
+  main,.main,.content,.main-content{
+    height:auto !important;
+    overflow:visible !important;
+  }
+}
+
+
+
+/* =========================================================
+   V9 MOBILE APP / LANDSCAPE FIX
+   - Sidebar becomes off-canvas drawer on tablet/phone
+   - Bottom nav used on phones in portrait + landscape
+   - No text overlap
+   - Desktop keeps sidebar
+   ========================================================= */
+
+.mobile-menu-btn{
+  display:none;
+  position:fixed;
+  left:14px;
+  top:14px;
+  width:46px;
+  height:46px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#f72585,#ff4fa0);
+  color:#fff;
+  font-size:24px;
+  line-height:1;
+  z-index:1201;
+  box-shadow:0 10px 26px rgba(247,37,133,.28);
+  cursor:pointer;
+}
+
+.mobile-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(35,20,30,.34);
+  backdrop-filter:blur(2px);
+  z-index:1198;
+}
+
+@media (max-width: 1024px){
+  html,body{
+    overflow:auto !important;
+    height:auto !important;
+  }
+
+  .mobile-menu-btn{display:flex;align-items:center;justify-content:center;}
+
+  .sidebar{
+    display:block !important;
+    position:fixed !important;
+    left:0 !important;
+    top:0 !important;
+    bottom:0 !important;
+    width:min(290px,82vw) !important;
+    height:100dvh !important;
+    max-height:100dvh !important;
+    z-index:1200 !important;
+    transform:translateX(-105%) !important;
+    transition:transform .24s ease !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    padding-top:72px !important;
+    box-shadow:18px 0 40px rgba(78,28,56,.18) !important;
+  }
+
+  body.mobile-menu-open .sidebar{
+    transform:translateX(0) !important;
+  }
+
+  body.mobile-menu-open .mobile-overlay{
+    display:block;
+  }
+
+  .sidebar .brand,
+  .sidebar .logo,
+  .sidebar h1,
+  .sidebar h2{
+    white-space:normal !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    max-width:100% !important;
+  }
+
+  .sidebar .menu-item,
+  .sidebar .nav-item,
+  .sidebar button{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    white-space:normal !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    word-break:break-word !important;
+    line-height:1.25 !important;
+  }
+
+  .content,.main-content,main,.main{
+    width:100% !important;
+    max-width:none !important;
+    margin-left:0 !important;
+    padding:74px 12px 92px !important;
+    height:auto !important;
+    overflow:visible !important;
+  }
+
+  .topbar,.header,.page-header{
+    position:sticky !important;
+    top:0 !important;
+    z-index:40 !important;
+    margin-top:0 !important;
+  }
+
+  .bottom-nav{
+    display:flex !important;
+    position:fixed !important;
+    left:8px !important;
+    right:8px !important;
+    bottom:8px !important;
+    height:68px !important;
+    border-radius:20px !important;
+    z-index:1100 !important;
+    padding:4px 6px env(safe-area-inset-bottom) !important;
+    justify-content:space-around !important;
+    align-items:center !important;
+    background:rgba(255,255,255,.96) !important;
+    backdrop-filter:blur(16px) !important;
+  }
+
+  .bottom-nav button,
+  .bottom-nav .nav-btn{
+    flex:1 1 0 !important;
+    min-width:0 !important;
+    border:none !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    color:#806b78 !important;
+    font-size:11px !important;
+    padding:6px 3px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:2px !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+
+  .bottom-nav button.active,
+  .bottom-nav .active{
+    color:#f72585 !important;
+    font-weight:800 !important;
+  }
+
+  .pos-layout,
+  .checkout-layout,
+  .sales-layout,
+  .pos-grid,
+  .checkout-grid{
+    display:block !important;
+    height:auto !important;
+    overflow:visible !important;
+  }
+
+  .catalog-panel,
+  .invoice-panel,
+  .cart-panel,
+  .checkout-panel{
+    height:auto !important;
+    max-height:none !important;
+    overflow:visible !important;
+  }
+
+  .cart-items,.invoice-items,.checkout-items{
+    max-height:none !important;
+    overflow:visible !important;
+  }
+}
+
+/* PHONE PORTRAIT */
+@media (max-width: 700px) and (orientation: portrait){
+  .service-grid,.product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+/* PHONE LANDSCAPE: avoid crushed sidebar/text; compact app layout */
+@media (max-width: 1024px) and (orientation: landscape){
+  .content,.main-content,main,.main{
+    padding-top:62px !important;
+    padding-bottom:78px !important;
+  }
+
+  .mobile-menu-btn{
+    top:8px !important;
+    left:8px !important;
+    width:42px !important;
+    height:42px !important;
+  }
+
+  .bottom-nav{
+    height:58px !important;
+    left:10px !important;
+    right:10px !important;
+    bottom:6px !important;
+  }
+
+  .bottom-nav button,
+  .bottom-nav .nav-btn{
+    font-size:10px !important;
+  }
+
+  .service-grid,.product-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+
+  .inline-qr-panel{
+    display:grid !important;
+    grid-template-columns:150px 1fr !important;
+    grid-template-areas:
+      "title title"
+      "qr amount"
+      "qr bank"
+      "qr note"
+      "qr status" !important;
+    text-align:left !important;
+  }
+
+  .inline-qr-image-wrap{
+    width:140px !important;
+    height:140px !important;
+  }
+}
+
+/* TRUE DESKTOP */
+@media (min-width: 1025px){
+  .mobile-menu-btn,.mobile-overlay{display:none !important;}
+}
+
+
+/* ===== V10 HAIR SALON THU TUONG BRAND ===== */
+.sidebar .brand,
+.sidebar .logo{
+  min-height:118px !important;
+  height:auto !important;
+  padding:12px 10px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  white-space:normal !important;
+}
+.sidebar .brand::before,
+.sidebar .logo::before{
+  content:"";
+  display:block;
+  width:100%;
+  height:92px;
+  background:url("./hair_salon_thu_tuong_logo.png") center/contain no-repeat;
+}
+.sidebar .brand > *,
+.sidebar .logo > *{
+  display:none !important;
+}
+.sidebar .brand::after,
+.sidebar .logo::after{
+  display:none !important;
+}
+@media(max-width:1024px){
+  .sidebar .brand,.sidebar .logo{
+    min-height:105px !important;
+    padding:8px !important;
+  }
+  .sidebar .brand::before,.sidebar .logo::before{
+    height:82px !important;
+  }
+}
+
+
+
+/* =========================================================
+   V10.1 SIDEBAR FIX - COMPACT / NO HUGE GAPS
+   ========================================================= */
+.sidebar{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-start !important;
+  align-items:stretch !important;
+  gap:0 !important;
+  padding:14px 12px 18px !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+
+.sidebar .brand,
+.sidebar .logo{
+  flex:0 0 auto !important;
+  width:100% !important;
+  min-height:78px !important;
+  height:78px !important;
+  margin:0 0 12px 0 !important;
+  padding:4px 2px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+.sidebar .brand::before,
+.sidebar .logo::before{
+  width:100% !important;
+  height:68px !important;
+  background-size:contain !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+}
+
+/* Force all menu containers to stay compact at the top */
+.sidebar nav,
+.sidebar .nav,
+.sidebar .menu,
+.sidebar .menu-list,
+.sidebar .nav-list,
+.sidebar .sidebar-menu{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-start !important;
+  align-items:stretch !important;
+  gap:6px !important;
+  flex:0 0 auto !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* Prevent inherited space-between / full-height menu behavior */
+.sidebar > *{
+  flex-shrink:0 !important;
+}
+.sidebar .menu-item,
+.sidebar .nav-item,
+.sidebar button{
+  flex:0 0 auto !important;
+  min-height:44px !important;
+  height:auto !important;
+  margin:0 !important;
+  padding:11px 12px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:9px !important;
+  line-height:1.25 !important;
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow:visible !important;
+}
+
+/* If the old HTML placed the menu directly in sidebar */
+.sidebar > .menu-item,
+.sidebar > .nav-item,
+.sidebar > button{
+  margin-bottom:6px !important;
+}
+
+/* Remove giant spacer-like behavior from any sidebar child */
+.sidebar [style*="justify-content:space-between"],
+.sidebar [style*="justify-content: space-between"]{
+  justify-content:flex-start !important;
+}
+
+/* Desktop sidebar width and clean typography */
+@media(min-width:1025px){
+  .sidebar{
+    width:240px !important;
+    min-width:240px !important;
+    max-width:240px !important;
+  }
+  .sidebar .menu-item,
+  .sidebar .nav-item,
+  .sidebar button{
+    font-size:14px !important;
+  }
+}
+
+/* Tablet / phone drawer */
+@media(max-width:1024px){
+  .sidebar{
+    width:min(300px,84vw) !important;
+    padding:72px 12px 18px !important;
+  }
+  .sidebar .brand,
+  .sidebar .logo{
+    height:72px !important;
+    min-height:72px !important;
+    margin-bottom:10px !important;
+  }
+  .sidebar .brand::before,
+  .sidebar .logo::before{
+    height:62px !important;
+  }
+}
+
+
+
+/* =========================================================
+   V11 PROFESSIONAL MENU - HAIR SALON THU TUONG
+   ========================================================= */
+.sidebar{
+  background:linear-gradient(180deg,#fff 0%,#fffafd 100%) !important;
+  border-right:1px solid #f4d6e4 !important;
+}
+.sidebar .brand,.sidebar .logo{
+  height:104px !important;
+  min-height:104px !important;
+  margin-bottom:14px !important;
+}
+.sidebar .brand::before,.sidebar .logo::before{
+  height:94px !important;
+}
+
+/* Professional menu rows */
+.sidebar .menu-item,
+.sidebar .nav-item,
+.sidebar button{
+  position:relative !important;
+  min-height:48px !important;
+  margin:3px 0 !important;
+  padding:11px 34px 11px 46px !important;
+  border-radius:15px !important;
+  color:#46506d !important;
+  font-size:14px !important;
+  font-weight:750 !important;
+  letter-spacing:0 !important;
+  opacity:1 !important;
+}
+
+/* Hide old emoji/icon text by overlaying a clean icon tile */
+.sidebar .menu-item::before,
+.sidebar .nav-item::before,
+.sidebar button::before{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  width:22px;
+  text-align:center;
+  color:#f72585;
+  font-size:18px;
+  font-weight:900;
+}
+
+/* Icon mapping by order for existing 7 core items */
+.sidebar .menu-item:nth-of-type(1)::before,
+.sidebar .nav-item:nth-of-type(1)::before{content:"▥";}
+.sidebar .menu-item:nth-of-type(2)::before,
+.sidebar .nav-item:nth-of-type(2)::before{content:"▤";}
+.sidebar .menu-item:nth-of-type(3)::before,
+.sidebar .nav-item:nth-of-type(3)::before{content:"✂";}
+.sidebar .menu-item:nth-of-type(4)::before,
+.sidebar .nav-item:nth-of-type(4)::before{content:"▣";}
+.sidebar .menu-item:nth-of-type(5)::before,
+.sidebar .nav-item:nth-of-type(5)::before{content:"◆";}
+.sidebar .menu-item:nth-of-type(6)::before,
+.sidebar .nav-item:nth-of-type(6)::before{content:"▥";}
+.sidebar .menu-item:nth-of-type(7)::before,
+.sidebar .nav-item:nth-of-type(7)::before{content:"⚙";}
+
+/* right chevron */
+.sidebar .menu-item::after,
+.sidebar .nav-item::after{
+  content:"›";
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-52%);
+  font-size:25px;
+  line-height:1;
+  color:#75809b;
+}
+.sidebar .menu-item.active,
+.sidebar .nav-item.active,
+.sidebar button.active{
+  color:#fff !important;
+  background:linear-gradient(135deg,#f72585,#ff3e94) !important;
+  box-shadow:0 10px 24px rgba(247,37,133,.22) !important;
+}
+.sidebar .menu-item.active::before,
+.sidebar .nav-item.active::before,
+.sidebar .menu-item.active::after,
+.sidebar .nav-item.active::after{
+  color:#fff !important;
+}
+
+/* Make old emoji transparent where it appears as the first text node/span */
+.sidebar .menu-item > span:first-child:not(:last-child),
+.sidebar .nav-item > span:first-child:not(:last-child){
+  color:inherit;
+}
+
+/* Mobile drawer close control */
+.mobile-menu-btn{
+  background:linear-gradient(135deg,#f72585,#ff4fa0) !important;
+  color:#fff !important;
+}
+body.mobile-menu-open .mobile-menu-btn{
+  left:min(246px,calc(82vw - 48px)) !important;
+}
+body.mobile-menu-open .mobile-menu-btn{
+  font-size:0 !important;
+}
+body.mobile-menu-open .mobile-menu-btn::after{
+  content:"×";
+  font-size:30px;
+  font-weight:400;
+}
+
+/* Footer brand card */
+.salon-menu-footer{
+  margin-top:16px;
+  padding:15px 10px;
+  border-radius:18px;
+  text-align:center;
+  background:linear-gradient(135deg,#fff0f7,#ffe3f0);
+  border:1px solid #f8cce0;
+  color:#f72585;
+  font-size:13px;
+  line-height:1.45;
+}
+.salon-menu-footer b{
+  display:block;
+  margin-top:4px;
+  letter-spacing:.08em;
+  font-size:11px;
+}
+
+/* Drawer widths */
+@media(max-width:1024px){
+  .sidebar{
+    width:min(330px,88vw) !important;
+    padding:70px 16px 18px !important;
+  }
+  .sidebar .menu-item,.sidebar .nav-item,.sidebar button{
+    font-size:15px !important;
+    min-height:50px !important;
+  }
+  body.mobile-menu-open .mobile-menu-btn{
+    left:min(276px,calc(88vw - 50px)) !important;
+  }
+}
+@media(max-width:480px){
+  .sidebar{width:88vw !important;}
+}
+
+
+
+/* ===== V12 EXACT PROFESSIONAL DRAWER ===== */
+:root{
+  --salon-pink:#f72585;
+  --salon-pink2:#ff3f94;
+  --salon-ink:#46506d;
+  --salon-soft:#fff4f9;
+  --salon-border:#f3d4e2;
+}
+.sidebar.salon-drawer{
+  width:280px !important;
+  min-width:280px !important;
+  max-width:280px !important;
+  height:100vh !important;
+  padding:24px 18px 18px !important;
+  background:#fff !important;
+  border-right:1px solid var(--salon-border) !important;
+  box-shadow:12px 0 34px rgba(57,31,48,.08) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  justify-content:flex-start !important;
+  gap:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  scrollbar-width:thin;
+}
+.salon-brand{
+  flex:0 0 auto;
+  padding:0 8px 14px;
+  text-align:center;
+}
+.salon-brand img{
+  display:block;
+  width:100%;
+  max-width:238px;
+  height:auto;
+  margin:0 auto;
+  object-fit:contain;
+}
+.salon-tagline{
+  margin-top:-2px;
+  font-size:13px;
+  font-style:italic;
+  font-weight:700;
+  color:var(--salon-pink);
+}
+.salon-nav{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:6px !important;
+  height:auto !important;
+  min-height:0 !important;
+  flex:0 0 auto !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+.salon-nav button{
+  width:100% !important;
+  min-height:52px !important;
+  margin:0 !important;
+  padding:10px 12px !important;
+  border:0 !important;
+  border-radius:15px !important;
+  background:transparent !important;
+  color:var(--salon-ink) !important;
+  display:grid !important;
+  grid-template-columns:30px 1fr 18px !important;
+  align-items:center !important;
+  gap:10px !important;
+  text-align:left !important;
+  font-size:15px !important;
+  font-weight:800 !important;
+  line-height:1.2 !important;
+  cursor:pointer;
+  box-shadow:none !important;
+}
+.salon-nav button:hover{
+  background:#fff2f8 !important;
+  color:#c91d66 !important;
+}
+.salon-nav button.active{
+  background:linear-gradient(135deg,var(--salon-pink),var(--salon-pink2)) !important;
+  color:#fff !important;
+  box-shadow:0 10px 24px rgba(247,37,133,.23) !important;
+}
+.salon-icon{
+  width:27px;height:27px;
+  display:grid;
+  place-items:center;
+}
+.salon-icon svg{
+  width:24px;height:24px;
+  fill:var(--salon-pink);
+  display:block;
+}
+.salon-nav button.active .salon-icon svg{fill:#fff}
+.salon-nav .label{
+  display:block !important;
+  color:inherit !important;
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+}
+.salon-nav .chev{
+  font-size:27px;
+  font-weight:400;
+  color:#74809a;
+  justify-self:end;
+  line-height:1;
+}
+.salon-nav button.active .chev{color:#fff}
+.drawer-footer{
+  flex:0 0 auto;
+  margin-top:18px;
+  padding:15px 12px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#fff0f7,#ffe5f1);
+  border:1px solid #f7cfe1;
+  text-align:center;
+}
+.drawer-footer .thanks{
+  color:var(--salon-pink);
+  font-size:15px;
+  font-style:italic;
+  font-weight:800;
+}
+.drawer-footer .shopname{
+  margin-top:7px;
+  color:#cf3a78;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+.drawer-close{
+  display:none;
+  position:absolute;
+  right:16px;
+  top:15px;
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:#fff0f7;
+  color:var(--salon-pink);
+  font-size:30px;
+  line-height:1;
+  align-items:center;
+  justify-content:center;
+  z-index:2;
+}
+
+/* desktop main offset follows real sidebar */
+@media(min-width:1025px){
+  .app{grid-template-columns:280px minmax(0,1fr) !important;}
+}
+
+/* tablet + phone = real app drawer */
+@media(max-width:1024px){
+  .sidebar.salon-drawer{
+    position:fixed !important;
+    left:0 !important;
+    top:0 !important;
+    bottom:0 !important;
+    width:min(360px,88vw) !important;
+    min-width:0 !important;
+    max-width:88vw !important;
+    height:100dvh !important;
+    padding:22px 18px 18px !important;
+    transform:translateX(-105%) !important;
+    transition:transform .24s ease !important;
+    z-index:1200 !important;
+    border-radius:0 24px 24px 0 !important;
+  }
+  body.mobile-menu-open .sidebar.salon-drawer{
+    transform:translateX(0) !important;
+  }
+  .drawer-close{display:flex}
+  body.mobile-menu-open .mobile-menu-btn{display:none !important}
+  .salon-brand{
+    padding:6px 46px 14px 4px;
+    text-align:left;
+  }
+  .salon-brand img{
+    max-width:245px;
+    margin-left:0;
+  }
+  .salon-tagline{
+    text-align:center;
+    max-width:245px;
+  }
+  .salon-nav button{
+    min-height:54px !important;
+    font-size:15px !important;
+    padding:10px 12px !important;
+  }
+  .drawer-footer{
+    margin-top:14px;
+  }
+}
+@media(max-width:420px){
+  .sidebar.salon-drawer{
+    width:90vw !important;
+    max-width:90vw !important;
+  }
+  .salon-brand img{max-width:220px}
+  .salon-nav button{min-height:51px !important}
+}
+/* Landscape mobile: compact but never hide labels */
+@media(max-width:1024px) and (orientation:landscape){
+  .sidebar.salon-drawer{
+    width:min(380px,62vw) !important;
+    max-width:62vw !important;
+    padding-top:14px !important;
+  }
+  .salon-brand{
+    padding-top:0;
+    padding-bottom:8px;
+  }
+  .salon-brand img{max-width:210px}
+  .salon-tagline{font-size:12px;max-width:210px}
+  .salon-nav{gap:3px !important}
+  .salon-nav button{
+    min-height:44px !important;
+    font-size:14px !important;
+    border-radius:12px !important;
+  }
+  .drawer-footer{
+    margin-top:8px;
+    padding:10px;
+  }
+}
+
+</style>
+
+<meta name="theme-color" content="#f72585">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Hair Salon Thu Tường">
+<link rel="manifest" href="manifest.webmanifest">
+
+
+<style id="v12-mobile-install">
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}
+body{overscroll-behavior-y:none}
+@media(max-width:1024px){
+  body{padding-top:env(safe-area-inset-top)}
+  .bottom-nav{
+    padding-bottom:max(6px,env(safe-area-inset-bottom)) !important;
+    height:calc(68px + env(safe-area-inset-bottom)) !important;
+  }
+  button,input,select{font-size:16px}
+}
+
+
+/* =========================================================
+   V12.1 DESKTOP POS CENTER + QR ALWAYS VISIBLE
+   ========================================================= */
+
+/* Desktop: center checkout workspace and keep one-screen flow */
+@media (min-width:1025px){
+  #pos{
+    height:calc(100vh - 104px) !important;
+    min-height:0 !important;
+    overflow:hidden !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:flex-start !important;
+  }
+
+  #pos > .pos{
+    width:min(1260px,100%) !important;
+    max-width:1260px !important;
+    height:100% !important;
+    margin:0 auto !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1.35fr) minmax(430px,.82fr) !important;
+    gap:16px !important;
+    align-items:stretch !important;
+    min-height:0 !important;
+  }
+
+  #pos > .pos > .card{
+    height:100% !important;
+    min-height:0 !important;
+    overflow:hidden !important;
+  }
+
+  /* Catalog remains stable/centered */
+  #pos > .pos > .card:first-child{
+    display:flex !important;
+    flex-direction:column !important;
+  }
+
+  #serviceCards{
+    flex:1 1 auto !important;
+    min-height:0 !important;
+    overflow-y:auto !important;
+    align-content:start !important;
+    padding-right:4px !important;
+  }
+
+  /* Invoice card: only item list scrolls; totals + QR stay visible */
+  #pos > .pos > .card:last-child{
+    display:flex !important;
+    flex-direction:column !important;
+    padding:14px 16px !important;
+  }
+
+  #pos > .pos > .card:last-child > h3{
+    flex:0 0 auto !important;
+    margin:0 0 8px !important;
+  }
+
+  #pos > .pos > .card:last-child > .row:first-of-type{
+    flex:0 0 auto !important;
+    margin-bottom:4px !important;
+  }
+
+  #cart{
+    flex:1 1 auto !important;
+    min-height:90px !important;
+    max-height:none !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    overscroll-behavior:contain !important;
+    margin-top:8px !important;
+    padding-right:5px !important;
+    scrollbar-width:thin;
+  }
+
+  /* Compact cart rows so more items fit */
+  #cart > div{
+    padding-top:7px !important;
+    padding-bottom:7px !important;
+  }
+
+  #pos > .pos > .card:last-child > .row[style*="margin-top:12px"]{
+    flex:0 0 auto !important;
+    margin-top:8px !important;
+  }
+
+  #pos .total{
+    flex:0 0 auto !important;
+    margin-top:7px !important;
+    padding:9px 12px !important;
+  }
+
+  #pos #cartTotal{
+    font-size:26px !important;
+  }
+
+  #resetAmountBtn{
+    flex:0 0 auto !important;
+    min-height:38px !important;
+    height:38px !important;
+    margin-top:6px !important;
+    padding:6px 10px !important;
+  }
+
+  /* QR is always in fixed lower portion of invoice card */
+  #inlineQrPanel{
+    flex:0 0 auto !important;
+    display:grid !important;
+    grid-template-columns:118px minmax(0,1fr) !important;
+    grid-template-areas:
+      "title title"
+      "qr amount"
+      "qr bank"
+      "qr note"
+      "qr status" !important;
+    gap:4px 10px !important;
+    margin-top:7px !important;
+    padding:8px 10px !important;
+    min-height:148px !important;
+    max-height:180px !important;
+    overflow:hidden !important;
+  }
+
+  #inlineQrPanel .inline-qr-title{
+    font-size:13px !important;
+    margin:0 !important;
+    line-height:1.1 !important;
+  }
+
+  #inlineQrPanel .inline-qr-image-wrap{
+    width:112px !important;
+    height:112px !important;
+    max-width:112px !important;
+    aspect-ratio:1/1 !important;
+    border-radius:10px !important;
+  }
+
+  #inlineQrPanel .inline-qr-image{
+    width:100% !important;
+    height:100% !important;
+    object-fit:contain !important;
+  }
+
+  #inlineQrPanel .inline-qr-amount{
+    font-size:20px !important;
+    padding:6px 8px !important;
+    border-radius:10px !important;
+  }
+
+  #inlineQrPanel .inline-qr-bank,
+  #inlineQrPanel .inline-qr-note,
+  #inlineQrPanel .inline-qr-status{
+    font-size:9.5px !important;
+    line-height:1.18 !important;
+    margin:0 !important;
+  }
+
+  #inlineQrPanel .inline-qr-note{
+    padding:4px 6px !important;
+  }
+
+  #pos > .pos > .card:last-child > .row[style*="margin-top:14px"]{
+    flex:0 0 auto !important;
+    margin-top:7px !important;
+  }
+
+  #pos > .pos > .card:last-child > .row[style*="margin-top:14px"] .btn{
+    min-height:40px !important;
+    height:40px !important;
+  }
+}
+
+/* Full HD / normal desktop */
+@media (min-width:1025px) and (min-height:850px){
+  #inlineQrPanel{
+    grid-template-columns:130px minmax(0,1fr) !important;
+    min-height:160px !important;
+    max-height:195px !important;
+  }
+  #inlineQrPanel .inline-qr-image-wrap{
+    width:124px !important;
+    height:124px !important;
+    max-width:124px !important;
+  }
+}
+
+/* Laptop 1366x768 and other short screens */
+@media (min-width:1025px) and (max-height:820px){
+  #pos{
+    height:calc(100vh - 88px) !important;
+  }
+
+  #pos > .pos{
+    width:min(1180px,100%) !important;
+    grid-template-columns:minmax(0,1.25fr) minmax(405px,.82fr) !important;
+    gap:12px !important;
+  }
+
+  #pos > .pos > .card:last-child{
+    padding:10px 12px !important;
+  }
+
+  #cart{
+    min-height:70px !important;
+  }
+
+  #inlineQrPanel{
+    grid-template-columns:96px minmax(0,1fr) !important;
+    min-height:124px !important;
+    max-height:142px !important;
+    padding:6px 8px !important;
+  }
+
+  #inlineQrPanel .inline-qr-image-wrap{
+    width:92px !important;
+    height:92px !important;
+    max-width:92px !important;
+  }
+
+  #inlineQrPanel .inline-qr-amount{
+    font-size:18px !important;
+    padding:5px 7px !important;
+  }
+
+  #inlineQrPanel .inline-qr-bank,
+  #inlineQrPanel .inline-qr-note,
+  #inlineQrPanel .inline-qr-status{
+    font-size:8.5px !important;
+  }
+
+  #pos .total{
+    padding:7px 10px !important;
+  }
+
+  #pos #cartTotal{
+    font-size:23px !important;
+  }
+}
+
+/* Mobile/tablet remains scrollable app layout */
+@media (max-width:1024px){
+  #pos{
+    height:auto !important;
+    overflow:visible !important;
+  }
+
+  #pos > .pos{
+    width:100% !important;
+    height:auto !important;
+    display:block !important;
+  }
+
+  #pos > .pos > .card{
+    height:auto !important;
+    overflow:visible !important;
+  }
+
+  #cart{
+    max-height:none !important;
+    overflow:visible !important;
+  }
+
+  #inlineQrPanel{
+    max-height:none !important;
+    overflow:visible !important;
+  }
+}
+
+</style>
+
+
+<style id="mobile-tablet-final-v13">
+/* V13 MOBILE/TABLET FINAL — ưu tiên cảm ứng, xoay màn hình và POS không che QR */
+html,body{min-height:100%;overscroll-behavior-y:none}
+button,input,select,textarea{font-size:16px}
+@media (max-width:1024px){
+  body{padding-bottom:78px!important}
+  .topbar{position:sticky!important;top:0!important;z-index:80!important;min-height:58px!important;padding:8px 12px!important}
+  .main,.content,main{max-width:100%!important;margin:0!important;padding-left:10px!important;padding-right:10px!important}
+  .page{padding-bottom:96px!important}
+  .card{border-radius:18px!important}
+  .btn,button{min-height:44px}
+  input,select,textarea{min-height:44px!important}
+  #pos{height:auto!important;min-height:calc(100dvh - 136px)!important;overflow:visible!important;display:block!important}
+  #pos>.pos{width:100%!important;max-width:760px!important;margin:0 auto!important;display:flex!important;flex-direction:column!important;gap:12px!important;height:auto!important;min-height:0!important}
+  #pos>.pos>.card{width:100%!important;min-width:0!important;height:auto!important;max-height:none!important;overflow:visible!important}
+  #serviceCards{max-height:none!important;overflow:visible!important}
+  #cart{max-height:34dvh!important;overflow-y:auto!important;overscroll-behavior:contain;padding-right:3px!important}
+  #inlineQrPanel{position:relative!important;display:grid!important;grid-template-columns:minmax(105px,32%) 1fr!important;gap:12px!important;align-items:center!important;min-height:132px!important;max-height:none!important;overflow:visible!important;margin-top:10px!important;padding:10px!important;border-radius:16px!important}
+  #inlineQrPanel img{width:100%!important;max-width:145px!important;height:auto!important;aspect-ratio:1/1!important;object-fit:contain!important;margin:auto!important}
+  .total{position:relative!important;z-index:2!important}
+  .bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:120!important;padding-bottom:max(6px,env(safe-area-inset-bottom))!important}
+  .salon-drawer{z-index:200!important}
+  .drawer-close{min-width:44px!important;min-height:44px!important}
+}
+@media (max-width:600px) and (orientation:portrait){
+  #pos>.pos{gap:10px!important}
+  #serviceCards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  #cart{max-height:27dvh!important}
+  #inlineQrPanel{grid-template-columns:112px 1fr!important;min-height:124px!important}
+  #inlineQrPanel img{max-width:112px!important}
+}
+@media (max-width:950px) and (orientation:landscape){
+  body{padding-bottom:64px!important}
+  #pos{padding-top:4px!important;padding-bottom:70px!important}
+  #pos>.pos{max-width:100%!important;display:grid!important;grid-template-columns:minmax(0,1.08fr) minmax(350px,.92fr)!important;align-items:start!important;gap:10px!important}
+  #pos>.pos>.card{max-height:calc(100dvh - 126px)!important;overflow:auto!important}
+  #serviceCards{max-height:calc(100dvh - 210px)!important;overflow-y:auto!important}
+  #cart{max-height:21dvh!important}
+  #inlineQrPanel{grid-template-columns:92px 1fr!important;min-height:104px!important;padding:7px!important;margin-top:6px!important}
+  #inlineQrPanel img{max-width:92px!important}
+  .salon-drawer{width:min(390px,62vw)!important;max-width:62vw!important}
+  .salon-nav .nav-label{display:block!important;white-space:nowrap!important}
+}
+@media (min-width:601px) and (max-width:1024px) and (orientation:portrait){
+  #pos>.pos{max-width:820px!important}
+  #serviceCards{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #cart{max-height:30dvh!important}
+  #inlineQrPanel{grid-template-columns:145px 1fr!important}
+}
+</style>
+
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Mở menu">☰</button>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<div class="app">
+  
+<aside class="sidebar salon-drawer" id="salonDrawer">
+  <button class="drawer-close" id="drawerClose" type="button" aria-label="Đóng menu">×</button>
+
+  <div class="salon-brand">
+    <img src="./hair_salon_thu_tuong_logo.png" alt="Hair Salon Thu Tường">
+    <div class="salon-tagline">♥ Đẹp hơn mỗi ngày</div>
+  </div>
+
+  <nav class="nav salon-nav">
+    <button class="active" data-page="dashboard">
+      <span class="salon-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h4v7H4zm6-9h4v16h-4zm6 5h4v11h-4z"/></svg></span>
+      <span class="label">Tổng quan</span><span class="chev">›</span>
+    </button>
+    <button data-page="pos">
+      <span class="salon-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a2 2 0 0 1 2 2v14l-3-2-3 2-3-2-3 2-2-1V5a2 2 0 0 1 2-2zm3 4v2h6V7zm0 4v2h6v-2z"/></svg></span>
+      <span class="label">Tính tiền</span><span class="chev">›</span>
+    </button>
+    <button data-page="services">
+      <span class="salon-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.64 7.64 4 2l-1 1 5.64 5.64A3.5 3.5 0 1 0 10 11.36L12 13l2-1.64A3.5 3.5 0 1 0 15.36 8.64L21 3l-1-1-8 6.5zM7.5 13A1.5 1.5 0 1 1 6 14.5 1.5 1.5 0 0 1 7.5 13zm9 0a1.5 1.5 0 1 1-1.5 1.5 1.5 1.5 0 0 1 1.5-1.5z"/></svg></span>
+      <span class="label">Dịch vụ / Sản phẩm</span><span class="chev">›</span>
+    </button>
+    <button data-page="transactions">
+      <span class="salon-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zm2 3h14V7H5zm0 4v5h14v-5zm2 2h4v1H7z"/></svg></span>
+      <span class="label">Hóa đơn</span><span class="chev">›</span>
+    </button>
+    <button data-page="expenses">
+      <span class="salon-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12 12 3h7a2 2 0 0 1 2 2v7l-9 9zm13-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></span>
+      <span class="label">Chi phí</span><span class="chev">›</span>
+    </button>
+    <button data-page="reports">
+      <span class="salon-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16v2H2V3h2zm3-2H5v-5h2zm4 0H9V8h2zm4 0h-2V5h2zm4 0h-2V10h2z"/></svg></span>
+      <span class="label">Báo cáo</span><span class="chev">›</span>
+    </button>
+    <button data-page="settings">
+      <span class="salon-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m19.14 12.94.04-.94-.04-.94 2.03-1.58-1.92-3.32-2.39.96a7.7 7.7 0 0 0-1.62-.94L14.88 3h-3.76l-.36 3.18c-.57.24-1.11.55-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58-.04.94.04.94-2.03 1.58 1.92 3.32 2.39-.96c.51.39 1.05.7 1.62.94l.36 3.18h3.76l.36-3.18c.57-.24 1.11-.55 1.62-.94l2.39.96 1.92-3.32zM13 15.5A3.5 3.5 0 1 1 16.5 12 3.5 3.5 0 0 1 13 15.5z"/></svg></span>
+      <span class="label">Cài đặt</span><span class="chev">›</span>
+    </button>
+  </nav>
+
+  <div class="drawer-footer">
+    <div class="thanks">♥ Cảm ơn bạn đã tin tưởng!</div>
+    <div class="shopname">— HAIR SALON THU TƯỜNG —</div>
+  </div>
+</aside>
+
+
+  <main class="main">
+    <div class="header no-print">
+      <div><h1 id="pageTitle">Tổng quan</h1><div class="date" id="today"></div></div>
+      <div class="row"><button class="btn ghost" onclick="backupData()">Sao lưu</button><label class="btn ghost" style="cursor:pointer">Khôi phục<input id="restoreFile" type="file" accept=".json" hidden onchange="restoreData(this)"></label></div>
+    </div>
+
+    <section id="dashboard" class="page active">
+<div class="salon-hero" style="
+  background:linear-gradient(135deg,#ff83bb 0%,#f72585 100%);
+  color:white;border-radius:24px;padding:22px 24px;margin:0 0 18px;
+  box-shadow:0 16px 34px rgba(247,37,133,.18);
+  position:relative;overflow:hidden">
+  <div style="position:relative;z-index:2">
+    <div style="font-size:13px;font-weight:800;letter-spacing:.14em;opacity:.9">HAIR SALON • BEAUTY & MORE</div>
+    <div style="font-size:30px;font-weight:950;line-height:1.08;margin-top:6px">Tỏa sáng vẻ đẹp của bạn</div>
+    <div style="font-size:14px;margin-top:8px;opacity:.92">Hair • Nail • Skincare</div>
+  </div>
+  <div style="position:absolute;right:-18px;top:-30px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.14)"></div>
+  <div style="position:absolute;right:70px;bottom:-55px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.10)"></div>
+</div>
+
+      <div class="grid4">
+        <div class="stat"><span>Doanh thu hôm nay</span><strong id="dToday">0 ₫</strong></div>
+        <div class="stat"><span>Doanh thu tháng</span><strong id="dMonth">0 ₫</strong></div>
+        <div class="stat"><span>Chi phí tháng</span><strong id="eMonth">0 ₫</strong></div>
+        <div class="stat"><span>Lợi nhuận tạm tính</span><strong id="pMonth">0 ₫</strong></div>
+      </div>
+      <div class="two">
+        <div class="card"><h3>Doanh thu 7 ngày gần nhất</h3><div id="bars"></div></div>
+        <div class="card"><h3>Tình hình năm</h3><table>
+          <tr><td>Doanh thu dịch vụ</td><td class="money" id="yearSvc">0 ₫</td></tr>
+          <tr><td>Doanh thu bán sản phẩm</td><td class="money" id="yearProd">0 ₫</td></tr>
+          <tr><td>Tổng doanh thu</td><td class="money" id="yearTotal">0 ₫</td></tr>
+          <tr><td>Tổng chi phí ghi nhận</td><td class="money" id="yearExpense">0 ₫</td></tr>
+        </table></div>
+      </div>
+    </section>
+
+    <section id="pos" class="page">
+      <div class="pos">
+        <div class="card" style="margin-top:0"><div class="row" style="justify-content:space-between"><h3>Chọn dịch vụ / sản phẩm</h3><input id="serviceSearch" placeholder="Tìm nhanh..." oninput="renderServiceCards()"></div><div id="serviceCards" class="service-grid"></div></div>
+        <div class="card" style="margin-top:0"><h3>Hóa đơn mới</h3>
+          <div class="row"><input id="customerName" placeholder="Tên khách" style="flex:1"><input id="customerPhone" placeholder="SĐT" style="width:130px"></div>
+          <div id="cart" style="margin-top:12px"></div>
+          <div class="row" style="margin-top:12px"><input id="discount" type="number" min="0" value="0" placeholder="Giảm giá" style="width:130px" oninput="renderCart()"><select id="payment"><option>Tiền mặt</option><option>Chuyển khoản</option><option>Thẻ</option></select></div>
+          <div class="total"><span>Thanh toán</span><span id="cartTotal">0 ₫</span></div>
+          <button type="button" id="resetAmountBtn" class="btn reset-amount-btn" onclick="resetPaymentAmount()">
+            ↺ ĐẶT LẠI SỐ TIỀN
+          </button>
+          <div id="inlineQrPanel" class="inline-qr-panel">
+            <div class="inline-qr-title">QR THANH TOÁN</div>
+            <div class="inline-qr-sub">Mã QR tự thay đổi theo đúng tổng tiền hóa đơn</div>
+            <div id="inlineQrAmount" class="inline-qr-amount">0 ₫</div>
+            <div class="inline-qr-image-wrap">
+              <img id="inlineQrImage" class="inline-qr-image" alt="QR thanh toán">
+              <div id="inlineQrPlaceholder" class="inline-qr-placeholder">
+                Chọn dịch vụ/sản phẩm để tạo QR thanh toán.<br>
+                Nếu QR chưa hiện, hãy nhập ngân hàng và số tài khoản trong <b>Cài đặt</b>.
+              </div>
+            </div>
+            <div id="inlineQrBank" class="inline-qr-bank"></div>
+            <div id="inlineQrNote" class="inline-qr-note"></div>
+            <div id="inlineQrStatus" class="inline-qr-status"></div>
+          </div>
+          <div class="row" style="margin-top:14px">
+            
+            <button class="btn green" style="flex:1" onclick="checkout()">HOÀN TẤT & LƯU HÓA ĐƠN</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="page">
+      <div class="card" style="margin-top:0"><h3>Thêm dịch vụ / sản phẩm</h3>
+        <div class="formgrid">
+          <div><label>Tên</label><input id="sName"></div>
+          <div><label>Nhóm</label><select id="sType"><option value="service">Dịch vụ tóc</option><option value="product">Bán sản phẩm</option></select></div>
+          <div><label>Giá bán</label><input id="sPrice" type="number" min="0"></div>
+          <div style="align-self:end"><button class="btn primary" style="width:100%" onclick="addService()">+ Thêm</button></div>
+        </div>
+      </div>
+      <div class="card"><h3>Danh mục</h3><table><thead><tr><th>Tên</th><th>Nhóm</th><th class="money">Giá</th><th></th></tr></thead><tbody id="serviceTable"></tbody></table></div>
+    </section>
+
+    <section id="transactions" class="page">
+      <div class="card" style="margin-top:0"><div class="row" style="justify-content:space-between"><h3>Lịch sử hóa đơn</h3><button class="btn ghost" onclick="exportTransactions()">Xuất CSV</button></div>
+        <div class="row" style="margin-bottom:12px"><input type="date" id="txFrom" onchange="renderTransactions()"><input type="date" id="txTo" onchange="renderTransactions()"><input id="txSearch" placeholder="Khách / SĐT / mã HĐ" oninput="renderTransactions()"></div>
+        <div style="overflow:auto"><table><thead><tr><th>Mã HĐ</th><th>Thời gian</th><th>Khách hàng</th><th>Thanh toán</th><th class="money">Doanh thu</th><th></th></tr></thead><tbody id="txTable"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="expenses" class="page">
+      <div class="card" style="margin-top:0"><h3>Ghi nhận chi phí</h3>
+        <div class="formgrid">
+          <div><label>Ngày</label><input type="date" id="eDate"></div>
+          <div><label>Nhóm chi phí</label>
+            <select id="eCategory">
+              <option value="materials">Mua phụ liệu</option>
+              <option value="labor">Nhân công</option>
+              <option value="rent">Mặt bằng / điện nước</option>
+              <option value="other">Chi phí khác</option>
+            </select>
+          </div>
+          <div><label>Nội dung</label><input id="eName" placeholder="VD: thuốc nhuộm / lương thợ A"></div>
+          <div><label>Số tiền</label><input id="eAmount" type="number" min="0"></div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <div id="laborFields" class="row" style="display:none;flex:1">
+            <input id="workerName" placeholder="Tên thợ / nhân viên" style="min-width:180px">
+            <select id="laborType">
+              <option value="salary">Lương</option>
+              <option value="commission">Hoa hồng</option>
+              <option value="bonus">Thưởng / phụ cấp</option>
+              <option value="other">Khác</option>
+            </select>
+          </div>
+          <button class="btn orange" onclick="addExpense()">+ Ghi chi phí</button>
+        </div>
+      </div>
+      <div class="grid4" style="margin-top:16px">
+        <div class="stat"><span>Phụ liệu tháng</span><strong id="materialsMonth">0 ₫</strong></div>
+        <div class="stat"><span>Nhân công tháng</span><strong id="laborMonth">0 ₫</strong></div>
+        <div class="stat"><span>Mặt bằng / điện nước</span><strong id="rentMonth">0 ₫</strong></div>
+        <div class="stat"><span>Chi phí khác</span><strong id="otherMonth">0 ₫</strong></div>
+      </div>
+      <div class="card"><div class="row" style="justify-content:space-between"><h3>Sổ chi phí</h3><button class="btn ghost" onclick="exportExpenses()">Xuất CSV</button></div><table><thead><tr><th>Ngày</th><th>Nhóm</th><th>Nội dung</th><th>Nhân viên</th><th>Loại nhân công</th><th class="money">Số tiền</th><th></th></tr></thead><tbody id="expenseTable"></tbody></table></div>
+    </section>
+
+    <section id="reports" class="page">
+      <div class="card" style="margin-top:0">
+        <div class="row" style="justify-content:space-between"><h3>Báo cáo doanh thu & dự tính thuế</h3><select id="reportYear" onchange="renderReports()"></select></div>
+        <div class="note">Màn hình này dùng để quản trị và dự tính. Khi kê khai/quyết toán chính thức cần đối chiếu quy định thuế đang có hiệu lực và dữ liệu hóa đơn điện tử.</div>
+        <div class="grid4" style="margin-top:14px">
+          <div class="stat"><span>Doanh thu dịch vụ</span><strong id="rSvc">0 ₫</strong></div>
+          <div class="stat"><span>Doanh thu sản phẩm</span><strong id="rProd">0 ₫</strong></div>
+          <div class="stat"><span>Tổng doanh thu</span><strong id="rTotal">0 ₫</strong></div>
+          <div class="stat"><span>Chi phí</span><strong id="rExpense">0 ₫</strong></div>
+        </div>
+        <div class="two">
+          <div class="card"><h3>Dự tính thuế GTGT</h3><div class="taxbox"><span>Dịch vụ × <b id="vatSvcRateTxt" style="display:inline;font-size:inherit">5%</b> + Sản phẩm × <b id="vatProdRateTxt" style="display:inline;font-size:inherit">1%</b></span><b id="vatEstimate">0 ₫</b></div></div>
+          <div class="card"><h3>Dự tính thuế TNCN theo doanh thu</h3><div class="taxbox"><span>Chỉ tính khi vượt ngưỡng cấu hình; phần vượt ngưỡng được phân bổ theo tỷ trọng doanh thu từng nhóm.</span><b id="pitEstimate">0 ₫</b></div></div>
+        </div>
+        <div class="card"><h3>Bảng tháng</h3><div style="overflow:auto"><table><thead><tr><th>Tháng</th><th class="money">Dịch vụ</th><th class="money">Sản phẩm</th><th class="money">Tổng DT</th><th class="money">Phụ liệu</th><th class="money">Nhân công</th><th class="money">Chi phí khác</th><th class="money">Tổng chi phí</th></tr></thead><tbody id="monthReport"></tbody></table></div></div>
+        <div class="row"><button class="btn primary" onclick="exportTaxReport()">Xuất báo cáo CSV</button></div>
+      </div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="card" style="margin-top:0"><h3>Thông tin cửa hàng</h3>
+        <div class="formgrid"><div><label>Tên tiệm</label><input id="shopName"></div><div><label>Mã số thuế</label><input id="taxCode"></div><div><label>Điện thoại</label><input id="shopPhone"></div><div><label>Địa chỉ</label><input id="shopAddress"></div></div>
+        <div class="card" style="margin-top:14px;background:#f8fafc">
+          <h3>QR thanh toán ngân hàng</h3>
+          <div class="formgrid">
+            <div><label>Mã ngân hàng VietQR</label><input id="bankCode" placeholder="VD: VCB, BIDV, ACB, MB hoặc BIN 970436"></div>
+            <div><label>Số tài khoản</label><input id="bankAccount" inputmode="numeric" placeholder="Số tài khoản nhận tiền"></div>
+            <div><label>Tên chủ tài khoản</label><input id="bankAccountName" placeholder="NGUYEN VAN A"></div>
+            <div><label>Mẫu QR</label><select id="qrTemplate"><option value="compact2">Compact 2</option><option value="compact">Compact</option><option value="qr_only">Chỉ QR</option><option value="print">Bản in</option></select></div>
+          </div>
+          <div class="note" style="margin-top:10px">
+QR tự gắn đúng số tiền hóa đơn. Nên dùng <b>mã BIN 6 số</b> của ngân hàng để ổn định nhất (ví dụ Vietcombank: 970436, BIDV: 970418, VietinBank: 970415, ACB: 970416). Cần Internet để tải ảnh VietQR.
+</div>
+        </div>
+      </div>
+      <div class="card"><h3>Cấu hình thuế</h3>
+        <div class="formgrid">
+          <div><label>Ngưỡng doanh thu không chịu thuế/năm</label><input id="taxThreshold" type="number"></div>
+          <div><label>GTGT dịch vụ (%)</label><input id="vatService" type="number" step="0.1"></div>
+          <div><label>GTGT bán hàng (%)</label><input id="vatProduct" type="number" step="0.1"></div>
+          <div><label>TNCN dịch vụ theo doanh thu (%)</label><input id="pitService" type="number" step="0.1"></div>
+          <div><label>TNCN bán hàng theo doanh thu (%)</label><input id="pitProduct" type="number" step="0.1"></div>
+          <div><label>Giới hạn áp dụng phương pháp TNCN theo doanh thu</label><input id="pitRevenueMethodMax" type="number"></div>
+        </div>
+        <button class="btn primary" style="margin-top:14px" onclick="saveSettings()">Lưu cài đặt</button>
+      </div>
+      <div class="card"><h3>Dữ liệu</h3><div class="row"><button class="btn ghost" onclick="backupData()">Tải file sao lưu JSON</button><button class="btn danger" onclick="resetDemo()">Xóa toàn bộ dữ liệu</button></div></div>
+    </section>
+
+    <section id="receiptPrint" class="page"></section>
+    <div class="footer no-print">HAIR SALON POS & TAX V1 • Dữ liệu lưu trên trình duyệt của máy này</div>
+  </main>
+</div>
+
+<script>
+const KEY='hairSalonPosTaxV1';
+const defaultState={
+ services:[
+  {id:'s1',name:'Cắt tóc nam',type:'service',price:80000},
+  {id:'s2',name:'Cắt tóc nữ',type:'service',price:150000},
+  {id:'s3',name:'Gội đầu',type:'service',price:70000},
+  {id:'s4',name:'Nhuộm tóc',type:'service',price:450000},
+  {id:'s5',name:'Uốn tóc',type:'service',price:550000},
+  {id:'s6',name:'Dầu gội',type:'product',price:180000}
+ ],
+ transactions:[], expenses:[],
+ settings:{shopName:'HAIR SALON',taxCode:'',shopPhone:'',shopAddress:'',bankCode:'',bankAccount:'',bankAccountName:'',qrTemplate:'compact2',taxThreshold:1000000000,vatService:5,vatProduct:1,pitService:2,pitProduct:0.5,pitRevenueMethodMax:3000000000}
+};
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(defaultState);
+let cart=[];
+
+function persist(){localStorage.setItem(KEY,JSON.stringify(state))}
+const V=n=>(Number(n)||0).toLocaleString('vi-VN')+' ₫';
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const dstr=(d=new Date())=>{let z=new Date(d); return z.getFullYear()+'-'+String(z.getMonth()+1).padStart(2,'0')+'-'+String(z.getDate()).padStart(2,'0')};
+const monthKey=d=>String(d).slice(0,7);
+document.getElementById('today').textContent=new Intl.DateTimeFormat('vi-VN',{dateStyle:'full'}).format(new Date());
+document.getElementById('eDate').value=dstr();
+document.getElementById('eCategory').addEventListener('change',()=>{
+  document.getElementById('laborFields').style.display=document.getElementById('eCategory').value==='labor'?'flex':'none';
+});
+
+const titles={dashboard:'Tổng quan',pos:'Tính tiền',services:'Dịch vụ / Sản phẩm',transactions:'Hóa đơn',expenses:'Chi phí',reports:'Báo cáo thuế',settings:'Cài đặt'};
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ document.getElementById(b.dataset.page).classList.add('active'); document.getElementById('pageTitle').textContent=titles[b.dataset.page];
+ refreshAll();
+});
+
+function txTotals(tx){
+ let svc=0,prod=0;
+ (tx.items||[]).forEach(i=>{let amt=i.price*i.qty;if(i.type==='product')prod+=amt;else svc+=amt});
+ let gross=svc+prod, discount=tx.discount||0, factor=gross?Math.max(0,(gross-discount)/gross):0;
+ return {service:svc*factor,product:prod*factor,total:Math.max(0,gross-discount)};
+}
+function renderServiceCards(){
+ let q=(document.getElementById('serviceSearch').value||'').toLowerCase();
+ document.getElementById('serviceCards').innerHTML=state.services.filter(s=>s.name.toLowerCase().includes(q)).map(s=>`<div class="service" onclick="addCart('${s.id}')"><div class="name">${esc(s.name)}</div><div><span class="badge">${s.type==='service'?'Dịch vụ':'Sản phẩm'}</span></div><div class="price">${V(s.price)}</div></div>`).join('');
+}
+function addCart(id){let s=state.services.find(x=>x.id===id);let c=cart.find(x=>x.id===id);if(c)c.qty++;else cart.push({...s,qty:1});renderCart()}
+function renderCart(){
+ let d=document.getElementById('cart'); if(!cart.length){d.innerHTML='<div style="color:#8b95a7;padding:20px;text-align:center">Chưa chọn dịch vụ</div>'}
+ else d.innerHTML=cart.map((c,i)=>`<div class="cart-line"><div><b>${esc(c.name)}</b><br><small>${V(c.price)}</small></div><input type="number" min="1" value="${c.qty}" onchange="cart[${i}].qty=Math.max(1,+this.value);renderCart()"><div class="money">${V(c.price*c.qty)}</div><button class="btn danger" style="padding:5px 8px" onclick="cart.splice(${i},1);renderCart()">×</button></div>`).join('');
+ let gross=cart.reduce((a,c)=>a+c.price*c.qty,0), disc=+document.getElementById('discount').value||0;
+ document.getElementById('cartTotal').textContent=V(Math.max(0,gross-disc));
+}
+function checkout(){checkoutWithCode('')}
+function printReceipt(tx){
+ let t=txTotals(tx), s=state.settings;
+ document.getElementById('receiptPrint').innerHTML=`<div style="max-width:360px;margin:auto;font-family:Arial"><h2 style="text-align:center">${esc(s.shopName)}</h2><div style="text-align:center">${esc(s.shopAddress)}<br>${esc(s.shopPhone)}</div><hr><b>${tx.id}</b><br>${new Date(tx.date).toLocaleString('vi-VN')}<br>Khách: ${esc(tx.customer||'Khách lẻ')}<hr>${tx.items.map(i=>`<div style="display:flex;justify-content:space-between"><span>${esc(i.name)} × ${i.qty}</span><span>${V(i.price*i.qty)}</span></div>`).join('')}<hr><div style="display:flex;justify-content:space-between"><b>TỔNG</b><b>${V(t.total)}</b></div><p style="text-align:center">Cảm ơn quý khách!</p></div>`;
+ setTimeout(()=>window.print(),100);
+}
+function addService(){
+ let name=document.getElementById('sName').value.trim(),price=+document.getElementById('sPrice').value||0,type=document.getElementById('sType').value;
+ if(!name||price<=0)return alert('Nhập tên và giá bán hợp lệ.');
+ state.services.push({id:'s'+Date.now(),name,type,price});persist();document.getElementById('sName').value='';document.getElementById('sPrice').value='';refreshAll();
+}
+function renderServices(){
+ document.getElementById('serviceTable').innerHTML=state.services.map((s,i)=>`<tr><td>${esc(s.name)}</td><td>${s.type==='service'?'Dịch vụ':'Sản phẩm'}</td><td class="money">${V(s.price)}</td><td><button class="btn danger" onclick="if(confirm('Xóa mục này?')){state.services.splice(${i},1);persist();refreshAll()}">Xóa</button></td></tr>`).join('');
+}
+function renderTransactions(){
+ let f=document.getElementById('txFrom').value,t=document.getElementById('txTo').value,q=(document.getElementById('txSearch').value||'').toLowerCase();
+ let arr=state.transactions.filter(x=>(!f||x.date.slice(0,10)>=f)&&(!t||x.date.slice(0,10)<=t)&&(!q||(x.id+' '+x.customer+' '+x.phone).toLowerCase().includes(q)));
+ document.getElementById('txTable').innerHTML=arr.map(x=>{let a=txTotals(x);return `<tr><td><b>${x.id}</b></td><td>${new Date(x.date).toLocaleString('vi-VN')}</td><td>${esc(x.customer||'Khách lẻ')}<br><small>${esc(x.phone)}</small></td><td>${esc(x.payment)}</td><td class="money">${V(a.total)}</td><td><button class="btn danger" onclick="deleteTx('${x.id}')">Xóa</button></td></tr>`}).join('');
+}
+function deleteTx(id){if(confirm('Xóa hóa đơn?')){state.transactions=state.transactions.filter(x=>x.id!==id);persist();refreshAll()}}
+function addExpense(){
+ let date=document.getElementById('eDate').value,
+     category=document.getElementById('eCategory').value,
+     name=document.getElementById('eName').value.trim(),
+     amount=+document.getElementById('eAmount').value||0,
+     worker=document.getElementById('workerName').value.trim(),
+     laborType=document.getElementById('laborType').value;
+ if(!date||!name||amount<=0)return alert('Nhập đầy đủ chi phí.');
+ if(category==='labor' && !worker) return alert('Nhập tên thợ / nhân viên cho chi phí nhân công.');
+ state.expenses.unshift({id:'e'+Date.now(),date,category,name,amount,worker:category==='labor'?worker:'',laborType:category==='labor'?laborType:''});
+ persist();
+ document.getElementById('eName').value='';
+ document.getElementById('eAmount').value='';
+ document.getElementById('workerName').value='';
+ refreshAll();
+}
+function expenseCategoryName(c){
+ return ({materials:'Mua phụ liệu',labor:'Nhân công',rent:'Mặt bằng / điện nước',other:'Chi phí khác'})[c]||'Chi phí khác';
+}
+function laborTypeName(c){
+ return ({salary:'Lương',commission:'Hoa hồng',bonus:'Thưởng / phụ cấp',other:'Khác'})[c]||'';
+}
+function renderExpenses(){
+ let now=new Date(), m=dstr(now).slice(0,7);
+ let monthEx=state.expenses.filter(e=>e.date.slice(0,7)===m);
+ let sumCat=cat=>monthEx.filter(e=>(e.category||'other')===cat).reduce((a,e)=>a+(+e.amount||0),0);
+ document.getElementById('materialsMonth').textContent=V(sumCat('materials'));
+ document.getElementById('laborMonth').textContent=V(sumCat('labor'));
+ document.getElementById('rentMonth').textContent=V(sumCat('rent'));
+ document.getElementById('otherMonth').textContent=V(sumCat('other'));
+ document.getElementById('expenseTable').innerHTML=state.expenses.map((e,i)=>`<tr>
+   <td>${e.date}</td>
+   <td><span class="badge">${expenseCategoryName(e.category||'other')}</span></td>
+   <td>${esc(e.name)}</td>
+   <td>${esc(e.worker||'')}</td>
+   <td>${esc(laborTypeName(e.laborType||''))}</td>
+   <td class="money">${V(e.amount)}</td>
+   <td><button class="btn danger" onclick="if(confirm('Xóa chi phí?')){state.expenses.splice(${i},1);persist();refreshAll()}">Xóa</button></td>
+ </tr>`).join('');
+}
+function dashboard(){
+ let now=new Date(),today=dstr(now),m=today.slice(0,7),y=String(now.getFullYear());
+ const sumTx=arr=>arr.reduce((a,x)=>a+txTotals(x).total,0);
+ let dt=sumTx(state.transactions.filter(x=>x.date.slice(0,10)===today)),dm=sumTx(state.transactions.filter(x=>x.date.slice(0,7)===m)),em=state.expenses.filter(e=>e.date.slice(0,7)===m).reduce((a,e)=>a+e.amount,0);
+ document.getElementById('dToday').textContent=V(dt);document.getElementById('dMonth').textContent=V(dm);document.getElementById('eMonth').textContent=V(em);document.getElementById('pMonth').textContent=V(dm-em);
+ let yt=state.transactions.filter(x=>x.date.slice(0,4)===y).map(txTotals),svc=yt.reduce((a,x)=>a+x.service,0),prod=yt.reduce((a,x)=>a+x.product,0),ye=state.expenses.filter(e=>e.date.slice(0,4)===y).reduce((a,e)=>a+e.amount,0);
+ document.getElementById('yearSvc').textContent=V(svc);document.getElementById('yearProd').textContent=V(prod);document.getElementById('yearTotal').textContent=V(svc+prod);document.getElementById('yearExpense').textContent=V(ye);
+ let days=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let k=dstr(d),v=sumTx(state.transactions.filter(x=>x.date.slice(0,10)===k));days.push({k,v})}
+ let max=Math.max(...days.map(x=>x.v),1);document.getElementById('bars').innerHTML=days.map(x=>`<div style="display:grid;grid-template-columns:70px 1fr 100px;gap:8px;align-items:center;margin:10px 0"><small>${x.k.slice(5)}</small><div style="height:9px;background:#eef1f6;border-radius:8px"><div style="height:100%;width:${x.v/max*100}%;background:#3568ff;border-radius:8px"></div></div><small class="money">${V(x.v)}</small></div>`).join('');
+}
+function reportYears(){
+ let years=new Set([new Date().getFullYear(),...state.transactions.map(x=>+x.date.slice(0,4)),...state.expenses.map(x=>+x.date.slice(0,4))]);
+ let el=document.getElementById('reportYear'),cur=el.value||new Date().getFullYear();el.innerHTML=[...years].sort((a,b)=>b-a).map(y=>`<option ${String(y)===String(cur)?'selected':''}>${y}</option>`).join('');
+}
+function renderReports(){
+ reportYears();let y=document.getElementById('reportYear').value||String(new Date().getFullYear()), txs=state.transactions.filter(x=>x.date.slice(0,4)===y), ex=state.expenses.filter(e=>e.date.slice(0,4)===y), totals=txs.map(txTotals);
+ let svc=totals.reduce((a,x)=>a+x.service,0),prod=totals.reduce((a,x)=>a+x.product,0),total=svc+prod,expense=ex.reduce((a,e)=>a+e.amount,0),cfg=state.settings;
+ document.getElementById('rSvc').textContent=V(svc);document.getElementById('rProd').textContent=V(prod);document.getElementById('rTotal').textContent=V(total);document.getElementById('rExpense').textContent=V(expense);
+ let vat=total>cfg.taxThreshold?svc*cfg.vatService/100+prod*cfg.vatProduct/100:0;
+ let taxable=Math.max(0,total-cfg.taxThreshold), pit=0;
+ if(total>0 && total<=cfg.pitRevenueMethodMax){pit=(taxable*(svc/total))*cfg.pitService/100+(taxable*(prod/total))*cfg.pitProduct/100}
+ document.getElementById('vatSvcRateTxt').textContent=cfg.vatService+'%';document.getElementById('vatProdRateTxt').textContent=cfg.vatProduct+'%';
+ document.getElementById('vatEstimate').textContent=V(vat);document.getElementById('pitEstimate').textContent=total>cfg.pitRevenueMethodMax?'Không tự tính – kiểm tra phương pháp thu nhập tính thuế':V(pit);
+ let rows=[];for(let m=1;m<=12;m++){
+ let k=y+'-'+String(m).padStart(2,'0'),tt=state.transactions.filter(x=>x.date.slice(0,7)===k).map(txTotals),s=tt.reduce((a,x)=>a+x.service,0),p=tt.reduce((a,x)=>a+x.product,0);
+ let exm=state.expenses.filter(x=>x.date.slice(0,7)===k), mat=exm.filter(x=>(x.category||'other')==='materials').reduce((a,x)=>a+x.amount,0), lab=exm.filter(x=>(x.category||'other')==='labor').reduce((a,x)=>a+x.amount,0), oth=exm.filter(x=>!['materials','labor'].includes(x.category||'other')).reduce((a,x)=>a+x.amount,0), e=mat+lab+oth;
+ rows.push(`<tr><td>${String(m).padStart(2,'0')}/${y}</td><td class="money">${V(s)}</td><td class="money">${V(p)}</td><td class="money">${V(s+p)}</td><td class="money">${V(mat)}</td><td class="money">${V(lab)}</td><td class="money">${V(oth)}</td><td class="money">${V(e)}</td></tr>`)
+}
+ document.getElementById('monthReport').innerHTML=rows.join('');
+}
+function loadSettings(){let s=state.settings;['shopName','taxCode','shopPhone','shopAddress','bankCode','bankAccount','bankAccountName','qrTemplate','taxThreshold','vatService','vatProduct','pitService','pitProduct','pitRevenueMethodMax'].forEach(k=>{let el=document.getElementById(k);if(el)el.value=s[k]??''})}
+function saveSettings(){['shopName','taxCode','shopPhone','shopAddress','bankCode','bankAccount','bankAccountName','qrTemplate'].forEach(k=>{let el=document.getElementById(k);state.settings[k]=el?el.value.trim():''});['taxThreshold','vatService','vatProduct','pitService','pitProduct','pitRevenueMethodMax'].forEach(k=>state.settings[k]=+document.getElementById(k).value||0);persist();alert('Đã lưu cài đặt.');refreshAll()}
+function csv(name,rows){let text='\ufeff'+rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n'),blob=new Blob([text],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function exportTransactions(){csv('hoa_don.csv',[['Mã HĐ','Ngày giờ','Khách','SĐT','Thanh toán','Dịch vụ','Sản phẩm','Tổng'],...state.transactions.map(x=>{let t=txTotals(x);return [x.id,new Date(x.date).toLocaleString('vi-VN'),x.customer,x.phone,x.payment,t.service,t.product,t.total]})])}
+function exportExpenses(){csv('chi_phi.csv',[['Ngày','Nhóm chi phí','Nội dung','Nhân viên','Loại nhân công','Số tiền'],...state.expenses.map(e=>[e.date,expenseCategoryName(e.category||'other'),e.name,e.worker||'',laborTypeName(e.laborType||''),e.amount])])}
+function exportTaxReport(){
+ let y=document.getElementById('reportYear').value,
+ rows=[['Tháng','Doanh thu dịch vụ','Doanh thu sản phẩm','Tổng doanh thu','Phụ liệu','Nhân công','Chi phí khác','Tổng chi phí']];
+ for(let m=1;m<=12;m++){
+   let k=y+'-'+String(m).padStart(2,'0'),
+       tt=state.transactions.filter(x=>x.date.slice(0,7)===k).map(txTotals),
+       s=tt.reduce((a,x)=>a+x.service,0),p=tt.reduce((a,x)=>a+x.product,0),
+       exm=state.expenses.filter(x=>x.date.slice(0,7)===k),
+       mat=exm.filter(x=>(x.category||'other')==='materials').reduce((a,x)=>a+x.amount,0),
+       lab=exm.filter(x=>(x.category||'other')==='labor').reduce((a,x)=>a+x.amount,0),
+       oth=exm.filter(x=>!['materials','labor'].includes(x.category||'other')).reduce((a,x)=>a+x.amount,0),
+       e=mat+lab+oth;
+   rows.push([String(m).padStart(2,'0')+'/'+y,s,p,s+p,mat,lab,oth,e]);
+ }
+ csv('bao_cao_thue_'+y+'.csv',rows)
+}
+function backupData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='HairSalon_Backup_'+dstr()+'.json';a.click();URL.revokeObjectURL(a.href)}
+function restoreData(input){let f=input.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.services||!x.transactions)throw 0;state=x;persist();refreshAll();alert('Khôi phục dữ liệu thành công.')}catch(e){alert('File sao lưu không hợp lệ.')}};r.readAsText(f);input.value=''}
+function resetDemo(){if(confirm('Xóa TOÀN BỘ hóa đơn, chi phí và danh mục hiện tại?')){localStorage.removeItem(KEY);state=structuredClone(defaultState);cart=[];persist();refreshAll()}}
+function refreshAll(){renderServiceCards();renderCart();renderServices();renderTransactions();renderExpenses();dashboard();renderReports();loadSettings()}
+refreshAll();
+</script>
+
+<nav class="mobile-bottom no-print">
+<button class="active" data-mobile="dashboard"><i>⌂</i>Tổng quan</button>
+<button data-mobile="pos"><i>✂</i>Tính tiền</button>
+<button data-mobile="transactions"><i>▤</i>Hóa đơn</button>
+<button data-mobile="expenses"><i>₫</i>Chi phí</button>
+<button data-mobile="reports"><i>▥</i>Báo cáo</button>
+</nav>
+<button class="fab-pos no-print" onclick="openPageMobile('pos')">＋</button>
+<script>
+function openPageMobile(page){
+ let b=document.querySelector('.nav button[data-page="'+page+'"]'); if(b)b.click();
+ document.querySelectorAll('.mobile-bottom button').forEach(x=>x.classList.toggle('active',x.dataset.mobile===page));
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.mobile-bottom button').forEach(b=>b.addEventListener('click',()=>openPageMobile(b.dataset.mobile)));
+</script>
+
+
+<script>
+/* ===== V5 INLINE AUTO QR ===== */
+let pendingQrInvoiceCodeV5 = '';
+
+function v5CurrentTotal(){
+  let gross = cart.reduce((a,c)=>a + (+c.price||0) * (+c.qty||0), 0);
+  let disc = Math.max(0, +document.getElementById('discount').value || 0);
+  return Math.max(0, gross - disc);
+}
+
+function v5InvoiceCode(){
+  let now=new Date();
+  return 'HD'
+    + now.getFullYear()
+    + String(now.getMonth()+1).padStart(2,'0')
+    + String(now.getDate()).padStart(2,'0')
+    + '-'
+    + String(Date.now()).slice(-6);
+}
+
+function updateInlinePaymentQR(){
+  const img = document.getElementById('inlineQrImage');
+  const placeholder = document.getElementById('inlineQrPlaceholder');
+  const amountEl = document.getElementById('inlineQrAmount');
+  const bankEl = document.getElementById('inlineQrBank');
+  const noteEl = document.getElementById('inlineQrNote');
+  const statusEl = document.getElementById('inlineQrStatus');
+  if(!img || !placeholder) return;
+
+  const amount = v5CurrentTotal();
+  amountEl.textContent = V(amount);
+
+  if(!cart.length || amount <= 0){
+    img.style.display='none';
+    img.removeAttribute('src');
+    placeholder.style.display='block';
+    placeholder.innerHTML='Chọn dịch vụ/sản phẩm để tạo QR thanh toán.';
+    bankEl.textContent='';
+    noteEl.textContent='';
+    statusEl.textContent='';
+    pendingQrInvoiceCodeV5='';
+    return;
+  }
+
+  const s = state.settings || {};
+  if(!s.bankCode || !s.bankAccount){
+    img.style.display='none';
+    img.removeAttribute('src');
+    placeholder.style.display='block';
+    placeholder.innerHTML='Chưa có thông tin ngân hàng.<br>Vào <b>Cài đặt → QR thanh toán ngân hàng</b>, nhập mã ngân hàng và số tài khoản rồi bấm <b>Lưu cài đặt</b>.';
+    bankEl.textContent='';
+    noteEl.textContent='';
+    statusEl.textContent='Tổng tiền hiện tại: ' + V(amount);
+    return;
+  }
+
+  if(!pendingQrInvoiceCodeV5) pendingQrInvoiceCodeV5 = v5InvoiceCode();
+
+  const template = s.qrTemplate || 'compact2';
+  const addInfo = pendingQrInvoiceCodeV5;
+  const bank=(s.bankCode||'').trim().replace(/\s+/g,'');
+  const account=(s.bankAccount||'').trim().replace(/\s+/g,'');
+  const safeInfo=addInfo.replace(/[^A-Za-z0-9 ]/g,'').slice(0,40);
+  const safeName=(s.bankAccountName||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9 ]/g,'').toUpperCase().slice(0,50);
+  const url = 'https://img.vietqr.io/image/'
+    + encodeURIComponent(bank) + '-'
+    + encodeURIComponent(account) + '-'
+    + encodeURIComponent(template)
+    + '.jpg?amount=' + encodeURIComponent(Math.round(amount))
+    + '&addInfo=' + encodeURIComponent(safeInfo)
+    + '&accountName=' + encodeURIComponent(safeName);
+
+  placeholder.style.display='none';
+  img.style.display='block';
+  img.onload = function(){
+    placeholder.style.display='none';
+    img.style.display='block';
+    statusEl.textContent='QR đã cập nhật đúng ' + V(amount);
+  };
+  img.onerror = function(){
+    img.style.display='none';
+    placeholder.style.display='block';
+    placeholder.innerHTML='Không tải được ảnh VietQR.<br><b>Kiểm tra mã ngân hàng/BIN và số tài khoản.</b><br><a href="'+url+'" target="_blank" rel="noopener">Bấm đây để kiểm tra QR trực tiếp</a>';
+    statusEl.textContent='Tổng cần thanh toán: ' + V(amount);
+  };
+
+  img.src = url;
+  bankEl.innerHTML = '<b>' + esc(s.bankCode) + '</b> • STK: <b>' + esc(s.bankAccount) + '</b>'
+    + (s.bankAccountName ? '<br>' + esc(s.bankAccountName) : '');
+  noteEl.textContent = 'Nội dung chuyển khoản: ' + addInfo;
+  statusEl.textContent = 'Đang tạo QR ' + V(amount) + '...';
+}
+
+/* Mỗi lần giỏ hàng/tổng tiền thay đổi, QR bên dưới thay đổi theo. */
+const v5OriginalRenderCart = renderCart;
+renderCart = function(){
+  v5OriginalRenderCart();
+  updateInlinePaymentQR();
+};
+
+document.getElementById('discount')?.addEventListener('input', updateInlinePaymentQR);
+
+/* Khi lưu lại thông tin ngân hàng, QR hiện ngay không cần tải lại trang. */
+const v5OriginalSaveSettings = saveSettings;
+saveSettings = function(){
+  v5OriginalSaveSettings();
+  setTimeout(updateInlinePaymentQR, 50);
+};
+
+/* Giữ mã hóa đơn QR khi thanh toán chuyển khoản. */
+const v5OriginalCheckout = checkout;
+checkout = function(){
+  if(!cart.length) return alert('Chưa có dịch vụ/sản phẩm trong hóa đơn.');
+  let now=new Date(), disc=Math.max(0,+document.getElementById('discount').value||0);
+  let payment=document.getElementById('payment').value;
+  let code=(payment==='Chuyển khoản' && pendingQrInvoiceCodeV5) ? pendingQrInvoiceCodeV5 : v5InvoiceCode();
+  let tx={
+    id:code,date:now.toISOString(),
+    customer:document.getElementById('customerName').value.trim(),
+    phone:document.getElementById('customerPhone').value.trim(),
+    payment,discount:disc,items:cart.map(x=>({...x}))
+  };
+  state.transactions.unshift(tx);
+  persist();
+  printReceipt(tx);
+  cart=[];
+  pendingQrInvoiceCodeV5='';
+  document.getElementById('customerName').value='';
+  document.getElementById('customerPhone').value='';
+  document.getElementById('discount').value=0;
+  renderCart();
+  refreshAll();
+};
+
+/* Hiển thị trạng thái QR ngay khi mở trang. */
+setTimeout(updateInlinePaymentQR, 50);
+</script>
+
+
+<script>
+function resetPaymentAmount(){
+  if(!cart || !cart.length){
+    document.getElementById('discount').value = 0;
+    if(typeof renderCart === 'function') renderCart();
+    if(typeof updateInlinePaymentQR === 'function') updateInlinePaymentQR();
+    return;
+  }
+  if(!confirm('Đặt lại số tiền và xóa toàn bộ món/dịch vụ đang chọn?')) return;
+  cart = [];
+  pendingQrInvoiceCodeV5 = '';
+  const discount = document.getElementById('discount');
+  if(discount) discount.value = 0;
+  const customerName = document.getElementById('customerName');
+  const customerPhone = document.getElementById('customerPhone');
+  if(customerName) customerName.value = '';
+  if(customerPhone) customerPhone.value = '';
+  if(typeof renderCart === 'function') renderCart();
+  if(typeof updateInlinePaymentQR === 'function') updateInlinePaymentQR();
+}
+</script>
+
+
+<script>
+(function(){
+  function markPosLayout(){
+    const candidates=[...document.querySelectorAll('div,section,main')];
+    const left=candidates.find(el => /Chọn dịch vụ\s*\/\s*sản phẩm/i.test(el.textContent||'') && el.querySelectorAll('.service-card,.product-card').length);
+    const right=candidates.find(el => /Hóa đơn mới/i.test(el.textContent||'') && el.querySelector('#cartTotal'));
+    if(!left || !right) return;
+
+    left.classList.add('catalog-panel');
+    right.classList.add('invoice-panel');
+
+    let p=left.parentElement;
+    while(p && p!==document.body){
+      if(right.parentElement===p || p.contains(right)){
+        p.classList.add('pos-layout');
+        break;
+      }
+      p=p.parentElement;
+    }
+
+    const list = right.querySelector('.cart-items,.invoice-items,.checkout-items') ||
+      [...right.children].find(el => el.querySelectorAll && el.querySelectorAll('button').length>=2 && /₫|đ/.test(el.textContent||''));
+    if(list) list.classList.add('cart-items');
+  }
+
+  document.addEventListener('DOMContentLoaded',markPosLayout);
+  window.addEventListener('resize',markPosLayout);
+  setTimeout(markPosLayout,200);
+})();
+</script>
+
+
+<script>
+(function(){
+  const btn=document.getElementById('mobileMenuBtn');
+  const overlay=document.getElementById('mobileOverlay');
+  const closeMenu=()=>document.body.classList.remove('mobile-menu-open');
+  if(btn) btn.addEventListener('click',()=>document.body.classList.toggle('mobile-menu-open'));
+  if(overlay) overlay.addEventListener('click',closeMenu);
+
+  document.addEventListener('click',function(e){
+    const sidebar=e.target.closest('.sidebar');
+    const clickedNav=e.target.closest('.menu-item,.nav-item,.sidebar button');
+    if(sidebar && clickedNav && window.innerWidth<=1024) closeMenu();
+  });
+
+  window.addEventListener('resize',()=>{
+    if(window.innerWidth>1024) closeMenu();
+  });
+})();
+</script>
+
+
+<script>
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+</script>
+
+
+<script>
+(function(){
+  function compactSidebar(){
+    const sb=document.querySelector('.sidebar');
+    if(!sb) return;
+    sb.style.justifyContent='flex-start';
+    sb.style.gap='0px';
+    [...sb.children].forEach(el=>{
+      el.style.flexGrow='0';
+      el.style.flexShrink='0';
+    });
+    const menu=sb.querySelector('nav,.nav,.menu,.menu-list,.nav-list,.sidebar-menu');
+    if(menu){
+      menu.style.justifyContent='flex-start';
+      menu.style.height='auto';
+      menu.style.minHeight='0';
+      menu.style.flexGrow='0';
+    }
+  }
+  document.addEventListener('DOMContentLoaded',compactSidebar);
+  window.addEventListener('resize',compactSidebar);
+  setTimeout(compactSidebar,100);
+})();
+</script>
+
+
+
+
+
+<script>
+(function(){
+  const closeBtn=document.getElementById('drawerClose');
+  const overlay=document.getElementById('mobileOverlay');
+  const close=()=>document.body.classList.remove('mobile-menu-open');
+  if(closeBtn) closeBtn.addEventListener('click',close);
+  if(overlay) overlay.addEventListener('click',close);
+  document.querySelectorAll('.salon-nav button').forEach(btn=>{
+    btn.addEventListener('click',()=>{ if(window.innerWidth<=1024) close(); });
+  });
+})();
+</script>
+
+
+
+<script id="menu-routing-fix-v13-1">
+/* V13.1: menu routing fix - always display exactly the selected module */
+(function(){
+  const titles={
+    dashboard:'Tổng quan',
+    pos:'Tính tiền',
+    services:'Dịch vụ / Sản phẩm',
+    transactions:'Hóa đơn',
+    expenses:'Chi phí',
+    reports:'Báo cáo',
+    settings:'Cài đặt'
+  };
+
+  function showPage(page){
+    const target=document.getElementById(page);
+    if(!target || !target.classList.contains('page')) return;
+
+    document.querySelectorAll('section.page').forEach(el=>el.classList.remove('active'));
+    target.classList.add('active');
+
+    document.querySelectorAll('.salon-nav button[data-page]').forEach(btn=>{
+      btn.classList.toggle('active',btn.dataset.page===page);
+    });
+    document.querySelectorAll('.mobile-bottom button[data-mobile]').forEach(btn=>{
+      btn.classList.toggle('active',btn.dataset.mobile===page);
+    });
+
+    const title=document.getElementById('pageTitle');
+    if(title) title.textContent=titles[page]||'';
+    document.body.classList.remove('mobile-menu-open');
+
+    if(typeof refreshAll==='function'){
+      try{ refreshAll(); }catch(e){ console.error('refreshAll:',e); }
+    }
+    requestAnimationFrame(()=>window.scrollTo(0,0));
+  }
+
+  document.querySelectorAll('.salon-nav button[data-page]').forEach(btn=>{
+    btn.onclick=null;
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      showPage(this.dataset.page);
+    });
+  });
+
+  document.querySelectorAll('.mobile-bottom button[data-mobile]').forEach(btn=>{
+    const clone=btn.cloneNode(true);
+    btn.replaceWith(clone);
+    clone.addEventListener('click',function(e){
+      e.preventDefault();
+      showPage(this.dataset.mobile);
+    });
+  });
+
+  window.openPageMobile=showPage;
+  window.showSalonPage=showPage;
+})();
+</script>
+
+
+<style id="tab-visibility-hard-fix-v13-2">
+/* V13.2 HARD FIX: only selected tab can be visible.
+   Overrides older mobile POS rules that forced #pos display:block. */
+.page{display:none !important;}
+.page.active{display:block !important;}
+#pos{display:none !important;}
+#pos.active{display:block !important;}
+@media (max-width:1024px){
+  .page{display:none !important;}
+  .page.active{display:block !important;}
+  #pos{display:none !important;}
+  #pos.active{display:block !important;}
+}
+</style>
+
+<script id="tab-routing-hard-fix-v13-2">
+(function(){
+  const titles={dashboard:'Tổng quan',pos:'Tính tiền',services:'Dịch vụ / Sản phẩm',transactions:'Hóa đơn',expenses:'Chi phí',reports:'Báo cáo',settings:'Cài đặt'};
+  const valid=new Set(Object.keys(titles));
+
+  function switchTab(page){
+    if(!valid.has(page)) return;
+    const target=document.getElementById(page);
+    if(!target) return;
+
+    document.querySelectorAll('section.page').forEach(sec=>{
+      sec.classList.toggle('active',sec.id===page);
+      sec.setAttribute('aria-hidden',sec.id===page?'false':'true');
+    });
+    document.querySelectorAll('.salon-nav [data-page]').forEach(btn=>
+      btn.classList.toggle('active',btn.dataset.page===page));
+    document.querySelectorAll('.mobile-bottom [data-mobile]').forEach(btn=>
+      btn.classList.toggle('active',btn.dataset.mobile===page));
+
+    const title=document.getElementById('pageTitle');
+    if(title) title.textContent=titles[page];
+    document.body.classList.remove('mobile-menu-open');
+
+    try{ if(typeof refreshAll==='function') refreshAll(); }catch(err){ console.warn(err); }
+    setTimeout(()=>window.scrollTo({top:0,left:0,behavior:'auto'}),0);
+  }
+
+  document.addEventListener('click',function(e){
+    const side=e.target.closest('.salon-nav [data-page]');
+    const bottom=e.target.closest('.mobile-bottom [data-mobile]');
+    const btn=side||bottom;
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    switchTab(side?btn.dataset.page:btn.dataset.mobile);
+  },true);
+
+  window.showSalonPage=switchTab;
+  window.openPageMobile=switchTab;
+  window.switchSalonTab=switchTab;
+
+  document.addEventListener('DOMContentLoaded',()=>switchTab('dashboard'));
+})();
+</script>
+
+</body>
+</html>
